@@ -21,14 +21,14 @@ using Tangent.CeviriDukkani.Domain.Mappers;
 
 namespace System.Business.Services {
     public class CommonService : ICommonService {
-        internal ILog Log { get; } = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-
         private readonly CeviriDukkaniModel _ceviriDukkaniModel;
         private readonly ICustomMapperConfiguration _customMapperConfiguration;
+        private readonly ILog _logger;
 
-        public CommonService(CeviriDukkaniModel ceviriDukkaniModel, ICustomMapperConfiguration customMapperConfiguration) {
+        public CommonService(CeviriDukkaniModel ceviriDukkaniModel, ICustomMapperConfiguration customMapperConfiguration,ILog logger) {
             _ceviriDukkaniModel = ceviriDukkaniModel;
             _customMapperConfiguration = customMapperConfiguration;
+            _logger = logger;
         }
 
         public ServiceResult Login(string email, string password) {
@@ -127,7 +127,7 @@ namespace System.Business.Services {
             } catch (Exception exc) {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
-                Log.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
             }
             return serviceResult;
         }
@@ -141,7 +141,7 @@ namespace System.Business.Services {
             } catch (Exception exc) {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
-                Log.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
             }
             return serviceResult;
         }
@@ -155,7 +155,7 @@ namespace System.Business.Services {
             } catch (Exception exc) {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
-                Log.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
             }
             return serviceResult;
         }
@@ -172,7 +172,7 @@ namespace System.Business.Services {
             } catch (Exception exc) {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
-                Log.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
             }
             return serviceResult;
         }
@@ -193,7 +193,7 @@ namespace System.Business.Services {
             } catch (Exception exc) {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
-                Log.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
             }
             return serviceResult;
         }
@@ -214,7 +214,7 @@ namespace System.Business.Services {
             } catch (Exception exc) {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
-                Log.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
             }
             return serviceResult;
         }
@@ -235,7 +235,7 @@ namespace System.Business.Services {
             } catch (Exception exc) {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
-                Log.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
             }
             return serviceResult;
         }
@@ -249,7 +249,7 @@ namespace System.Business.Services {
             } catch (Exception exc) {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
-                Log.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
             }
             return serviceResult;
         }
@@ -270,7 +270,7 @@ namespace System.Business.Services {
             } catch (Exception exc) {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
-                Log.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
             }
             return serviceResult;
         }
@@ -305,7 +305,7 @@ namespace System.Business.Services {
             } catch (Exception exc) {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
-                Log.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
             }
             return serviceResult;
         }
@@ -321,7 +321,7 @@ namespace System.Business.Services {
             } catch (Exception exc) {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
-                Log.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
             }
             return serviceResult;
         }
@@ -335,7 +335,7 @@ namespace System.Business.Services {
             } catch (Exception exc) {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
-                Log.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
             }
             return serviceResult;
         }
@@ -356,7 +356,7 @@ namespace System.Business.Services {
             } catch (Exception exc) {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
-                Log.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
             }
             return serviceResult;
         }
@@ -380,7 +380,7 @@ namespace System.Business.Services {
             } catch (Exception exc) {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
-                Log.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
             }
             return serviceResult;
         }
@@ -396,7 +396,7 @@ namespace System.Business.Services {
             } catch (Exception exc) {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
-                Log.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
             }
             return serviceResult;
         }
@@ -410,7 +410,7 @@ namespace System.Business.Services {
             } catch (Exception exc) {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
-                Log.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
             }
             return serviceResult;
         }
@@ -431,7 +431,7 @@ namespace System.Business.Services {
             } catch (Exception exc) {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
-                Log.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
             }
             return serviceResult;
         }
@@ -453,7 +453,7 @@ namespace System.Business.Services {
             } catch (Exception exc) {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
-                Log.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
             }
             return serviceResult;
         }
@@ -467,7 +467,7 @@ namespace System.Business.Services {
             } catch (Exception exc) {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
-                Log.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
             }
             return serviceResult;
         }
@@ -488,7 +488,7 @@ namespace System.Business.Services {
             } catch (Exception exc) {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
-                Log.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
             }
             return serviceResult;
         }
@@ -512,7 +512,7 @@ namespace System.Business.Services {
             } catch (Exception exc) {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
-                Log.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
             }
             return serviceResult;
         }
@@ -528,7 +528,7 @@ namespace System.Business.Services {
             } catch (Exception exc) {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
-                Log.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
             }
             return serviceResult;
         }
@@ -542,7 +542,7 @@ namespace System.Business.Services {
             } catch (Exception exc) {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
-                Log.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
             }
             return serviceResult;
         }
@@ -563,7 +563,7 @@ namespace System.Business.Services {
             } catch (Exception exc) {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
-                Log.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
             }
             return serviceResult;
         }
@@ -593,7 +593,7 @@ namespace System.Business.Services {
             } catch (Exception exc) {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
-                Log.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
             }
             return serviceResult;
         }
@@ -609,7 +609,7 @@ namespace System.Business.Services {
             } catch (Exception exc) {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
-                Log.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
             }
             return serviceResult;
         }
@@ -623,7 +623,7 @@ namespace System.Business.Services {
             } catch (Exception exc) {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
-                Log.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
             }
             return serviceResult;
         }
@@ -644,7 +644,7 @@ namespace System.Business.Services {
             } catch (Exception exc) {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
-                Log.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
             }
             return serviceResult;
         }
@@ -670,7 +670,7 @@ namespace System.Business.Services {
             } catch (Exception exc) {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
-                Log.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
             }
             return serviceResult;
         }
@@ -692,7 +692,7 @@ namespace System.Business.Services {
             } catch (Exception exc) {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
-                Log.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
             }
             return serviceResult;
         }
@@ -708,7 +708,7 @@ namespace System.Business.Services {
             } catch (Exception exc) {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
-                Log.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
             }
             return serviceResult;
         }
@@ -722,7 +722,7 @@ namespace System.Business.Services {
             } catch (Exception exc) {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
-                Log.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
             }
             return serviceResult;
         }
@@ -736,7 +736,7 @@ namespace System.Business.Services {
             } catch (Exception exc) {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
-                Log.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
             }
             return serviceResult;
         }
@@ -750,7 +750,7 @@ namespace System.Business.Services {
             } catch (Exception exc) {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
-                Log.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
             }
             return serviceResult;
         }
@@ -764,49 +764,105 @@ namespace System.Business.Services {
             } catch (Exception exc) {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
-                Log.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
             }
             return serviceResult;
         }
         public ServiceResult GetTongues() {
             var serviceResult = new ServiceResult();
             try {
-                var countries = _ceviriDukkaniModel.Tongues.Where(w => w.Active).ToList();
+                var data = _ceviriDukkaniModel.Tongues.Where(w => w.Active).ToList();
 
                 serviceResult.ServiceResultType = ServiceResultType.Success;
-                serviceResult.Data = countries.Select(s => _customMapperConfiguration.GetMapDto<TongueDto, Tongue>(s)).ToList();
+                serviceResult.Data = data.Select(s => _customMapperConfiguration.GetMapDto<TongueDto, Tongue>(s)).ToList();
             } catch (Exception exc) {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
-                Log.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
             }
             return serviceResult;
         }
         public ServiceResult GetSpecializations() {
             var serviceResult = new ServiceResult();
             try {
-                var countries = _ceviriDukkaniModel.Specializations.Include(a => a.Terminology).Where(w => w.Active).ToList();
+                var data = _ceviriDukkaniModel.Specializations.Include(a => a.Terminology).Where(w => w.Active).ToList();
 
                 serviceResult.ServiceResultType = ServiceResultType.Success;
-                serviceResult.Data = countries.Select(s => _customMapperConfiguration.GetMapDto<SpecializationDto, Specialization>(s)).ToList();
+                serviceResult.Data = data.Select(s => _customMapperConfiguration.GetMapDto<SpecializationDto, Specialization>(s)).ToList();
             } catch (Exception exc) {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
-                Log.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
             }
             return serviceResult;
         }
         public ServiceResult GetSoftwares() {
             var serviceResult = new ServiceResult();
             try {
-                var countries = _ceviriDukkaniModel.Softwares.Where(w => w.Active).ToList();
+                var data = _ceviriDukkaniModel.Softwares.Where(w => w.Active).ToList();
 
                 serviceResult.ServiceResultType = ServiceResultType.Success;
-                serviceResult.Data = countries.Select(s => _customMapperConfiguration.GetMapDto<SoftwareDto, Software>(s)).ToList();
+                serviceResult.Data = data.Select(s => _customMapperConfiguration.GetMapDto<SoftwareDto, Software>(s)).ToList();
             } catch (Exception exc) {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
-                Log.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+            }
+            return serviceResult;
+        }
+        public ServiceResult GetBankAccountTypes() {
+            var serviceResult = new ServiceResult();
+            try {
+                var data = _ceviriDukkaniModel.BankAccountTypes.Where(w => w.Active).ToList();
+
+                serviceResult.ServiceResultType = ServiceResultType.Success;
+                serviceResult.Data = data.Select(s => _customMapperConfiguration.GetMapDto<BankAccountTypeDto, BankAccountType>(s)).ToList();
+            } catch (Exception exc) {
+                serviceResult.Exception = exc;
+                serviceResult.ServiceResultType = ServiceResultType.Fail;
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+            }
+            return serviceResult;
+        }
+        public ServiceResult GetCurrencies() {
+            var serviceResult = new ServiceResult();
+            try {
+                var data = _ceviriDukkaniModel.Currencies.Where(w => w.Active).ToList();
+
+                serviceResult.ServiceResultType = ServiceResultType.Success;
+                serviceResult.Data = data.Select(s => _customMapperConfiguration.GetMapDto<CurrencyDto, Currency>(s)).ToList();
+            } catch (Exception exc) {
+                serviceResult.Exception = exc;
+                serviceResult.ServiceResultType = ServiceResultType.Fail;
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+            }
+            return serviceResult;
+        }
+        public ServiceResult GetWorkingTypes() {
+            var serviceResult = new ServiceResult();
+            try {
+                var data = _ceviriDukkaniModel.WorkingTypes.Where(w => w.Active).ToList();
+
+                serviceResult.ServiceResultType = ServiceResultType.Success;
+                serviceResult.Data = data.Select(s => _customMapperConfiguration.GetMapDto<WorkingTypeDto, WorkingType>(s)).ToList();
+            } catch (Exception exc) {
+                serviceResult.Exception = exc;
+                serviceResult.ServiceResultType = ServiceResultType.Fail;
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+            }
+            return serviceResult;
+        }
+        public ServiceResult GetServiceTypes() {
+            var serviceResult = new ServiceResult();
+            try {
+                var data = _ceviriDukkaniModel.ServiceTypes.Where(w => w.Active).ToList();
+
+                serviceResult.ServiceResultType = ServiceResultType.Success;
+                serviceResult.Data = data.Select(s => _customMapperConfiguration.GetMapDto<ServiceTypeDto, ServiceType>(s)).ToList();
+            } catch (Exception exc) {
+                serviceResult.Exception = exc;
+                serviceResult.ServiceResultType = ServiceResultType.Fail;
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
             }
             return serviceResult;
         }

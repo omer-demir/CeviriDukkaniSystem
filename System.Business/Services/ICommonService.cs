@@ -54,5 +54,9 @@ namespace System.Business.Services {
         ServiceResult GetTongues();
         ServiceResult GetSpecializations();
         ServiceResult GetSoftwares();
+        ServiceResult GetBankAccountTypes();
+        ServiceResult GetCurrencies();
+        ServiceResult GetWorkingTypes();
+        ServiceResult GetServiceTypes();
     }
 }

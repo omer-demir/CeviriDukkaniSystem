@@ -14,5 +14,6 @@ namespace System.Business.Services {
         ServiceResult AddOrUpdateUserPayment(UserDto userDto, int createdBy);
         ServiceResult AddOrUpdateUserRate(UserDto userDto, int createdBy);
         ServiceResult GetTechnologyKnowledgesByUserAbilityId(int userAbilityId);
+        ServiceResult GetRateItemsByUserRateId(int userRateId);
     }
 }

@@ -16,14 +16,16 @@ using EntityState = System.Data.Entity.EntityState;
 
 namespace System.Business.Services {
     public class UserService : IUserService {
-        internal ILog Log { get; } = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-
         private readonly CeviriDukkaniModel _model;
         private readonly ICustomMapperConfiguration _customMapperConfiguration;
+        private readonly ILog _logger;
+        //private readonly IMailService _mailService;
 
-        public UserService(CeviriDukkaniModel model, ICustomMapperConfiguration customMapperConfiguration) {
+        public UserService(CeviriDukkaniModel model, ICustomMapperConfiguration customMapperConfiguration,ILog logger) {
             _model = model;
             _customMapperConfiguration = customMapperConfiguration;
+            _logger = logger;
+            //_mailService = new YandexMailService();
         }
 
         public ServiceResult AddUser(UserDto userDto, int createdBy) {
@@ -33,6 +35,11 @@ namespace System.Business.Services {
                 userDto.Active = true;
 
                 var user = _customMapperConfiguration.GetMapEntity<User, UserDto>(userDto);
+
+                ////////////////
+
+
+                #region Email Control
 
                 var tempUser = _model.Users.FirstOrDefault(m => m.Email == user.Email && m.Active);
                 if (tempUser != null) {
@@ -46,21 +53,48 @@ namespace System.Business.Services {
                     f.CreatedBy = createdBy;
                 });
 
-                _model.Users.Add(user);
+                #endregion                
 
+                _model.Users.Add(user);
+                //if (userDto.UserRoles?.Count > 0)
+                //{
+                //    foreach (UserRoleDto userRoleDto in userDto.UserRoles)
+                //    {
+                //        userRoleDto.CreatedBy = createdBy;
+                //        userRoleDto.Active = true;
+                //        userRoleDto.UserId = user.Id;
+
+                //        var userRole = _customMapperConfiguration.GetMapEntity<UserRole, UserRoleDto>(userRoleDto);
+                //        _model.UserRoles.Add(userRole);
+                //    }
+                //}
                 if (_model.SaveChanges() <= 0) {
                     throw new BusinessException(ExceptionCodes.UnableToInsert);
                 }
                 serviceResult.ServiceResultType = ServiceResultType.Success;
                 serviceResult.Data = _customMapperConfiguration.GetMapDto<UserDto, User>(user);
 
+                //var message = ServiceHelpers.GenerateEmail(user.Name,
+                //    user.Email,
+                //    user.Password,
+                //    MailType.Welcome,
+                //    user.Id);
+
+                //var res = _mailService.SendMail("Hoşgeldiniz", message, new string[] { user.Email });
+                //if (res.ServiceResultType != ServiceResultType.Success) {
+                //    serviceResult.Message = "Email couldn't send to user";
+                //    serviceResult.ExceptionCode = ExceptionCodes.EmailCouldntSendToUser;
+                //    throw res.Exception;
+                //}
+
             } catch (Exception exc) {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
-                Log.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
             }
             return serviceResult;
         }
+
         public ServiceResult EditUser(UserDto userDto, int createdBy) {
             var serviceResult = new ServiceResult();
             try {
@@ -108,10 +142,11 @@ namespace System.Business.Services {
             } catch (Exception exc) {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
-                Log.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
             }
             return serviceResult;
         }
+
         public ServiceResult GetUser(int userId) {
             var serviceResult = new ServiceResult();
             try {
@@ -122,7 +157,7 @@ namespace System.Business.Services {
                     .Include(a => a.UserAbility.Specializations)
                     .Include(a => a.UserAbility.TechnologyKnowledges)
                     .Include(a => a.UserContact.District.City.Country)
-                    .Include(a => a.UserPayment)
+                    .Include(a => a.UserPayment.BankAccount)
                     .Include(a => a.UserRate)
                     .Include(a => a.UserScore)
                     .Include("UserRoles.UserRoleType")
@@ -136,10 +171,11 @@ namespace System.Business.Services {
             } catch (Exception exc) {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
-                Log.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
             }
             return serviceResult;
         }
+
         public ServiceResult GetUsers() {
             var serviceResult = new ServiceResult();
             try {
@@ -153,10 +189,11 @@ namespace System.Business.Services {
             } catch (Exception exc) {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
-                Log.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
             }
             return serviceResult;
         }
+
         public ServiceResult GetTranslatorsAccordingToOrderTranslationQuality(int orderId) {
 
             var serviceResult = new ServiceResult();
@@ -186,11 +223,12 @@ namespace System.Business.Services {
             } catch (Exception exc) {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
-                Log.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
             }
             return serviceResult;
 
         }
+
         public ServiceResult CreateUser(UserDto user) {
             var serviceResult = new ServiceResult(ServiceResultType.NotKnown);
             try {
@@ -205,6 +243,7 @@ namespace System.Business.Services {
             }
             return serviceResult;
         }
+
         public ServiceResult AddOrUpdateUserContact(UserDto userDto, int createdBy) {
             var serviceResult = new ServiceResult();
             try {
@@ -253,10 +292,11 @@ namespace System.Business.Services {
             } catch (Exception exc) {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
-                Log.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
             }
             return serviceResult;
         }
+
         public ServiceResult AddOrUpdateUserAbility(UserDto userDto, int createdBy) {
             var serviceResult = new ServiceResult();
             try {
@@ -391,7 +431,7 @@ namespace System.Business.Services {
             } catch (Exception exc) {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
-                Log.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
             }
             return serviceResult;
         }
@@ -411,14 +451,9 @@ namespace System.Business.Services {
                     userDto.UserPayment.CreatedBy = createdBy;
                     userDto.UserPayment.Active = true;
 
-                    if (userDto.UserPayment.Currency != null) {
-                        userDto.UserPayment.Currency.Active = true;
-                        userDto.UserPayment.Currency.CreatedBy = createdBy;
-                    }
-
-                    if (userDto.UserPayment.WorkingType != null) {
-                        userDto.UserPayment.WorkingType.Active = true;
-                        userDto.UserPayment.WorkingType.CreatedBy = createdBy;
+                    if (userDto.UserPayment.BankAccount != null) {
+                        userDto.UserPayment.BankAccount.Active = true;
+                        userDto.UserPayment.BankAccount.CreatedBy = createdBy;
                     }
 
                     var userPayment =
@@ -431,7 +466,22 @@ namespace System.Business.Services {
                     if (userPayment == null) {
                         throw new BusinessException(ExceptionCodes.UnableToInsert);
                     }
-                    userPayment.BankAccountId = userDto.UserPayment.BankAccount;
+
+                    var account = _model.BankAccounts.FirstOrDefault(f => f.Id == userDto.UserPayment.BankAccountId);
+                    if (account != null) {
+                        account.AccountHolderFullName = userDto.UserPayment.BankAccount.AccountHolderFullName;
+                        account.AccountNumber = userDto.UserPayment.BankAccount.AccountNumber;
+                        account.BankAccountTypeId = userDto.UserPayment.BankAccount.BankAccountTypeId;
+                        account.BankAddress = userDto.UserPayment.BankAccount.BankAddress;
+                        account.BankName = userDto.UserPayment.BankAccount.BankName;
+                        account.BeneficiaryAddress = userDto.UserPayment.BankAccount.BeneficiaryAddress;
+                        account.CityCountryBank = userDto.UserPayment.BankAccount.CityCountryBank;
+                        account.IBAN = userDto.UserPayment.BankAccount.IBAN;
+                        account.PaypalEmailAddress = userDto.UserPayment.BankAccount.PaypalEmailAddress;
+                        account.SwiftBicCode = userDto.UserPayment.BankAccount.SwiftBicCode;
+                    }
+
+                    userPayment.BankAccountId = userDto.UserPayment.BankAccountId;
                     userPayment.CurrencyId = userDto.UserPayment.CurrencyId;
                     userPayment.MinimumChargeAmount = userDto.UserPayment.MinimumChargeAmount;
                     userPayment.VatTaxNo = userDto.UserPayment.VatTaxNo;
@@ -451,7 +501,7 @@ namespace System.Business.Services {
             } catch (Exception exc) {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
-                Log.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
             }
             return serviceResult;
         }
@@ -462,7 +512,7 @@ namespace System.Business.Services {
                     throw new BusinessException(ExceptionCodes.UnableToInsert);
                 }
 
-                var user = _model.Users.FirstOrDefault(f => f.Id == userDto.Id);
+                var user = _model.Users.Include(a => a.UserRate.RateItems).FirstOrDefault(f => f.Id == userDto.Id);
                 if (user == null) {
                     throw new BusinessException(ExceptionCodes.UnableToInsert);
                 }
@@ -470,6 +520,20 @@ namespace System.Business.Services {
                 if (userDto.UserRate.Id == default(int)) {
                     userDto.UserRate.CreatedBy = createdBy;
                     userDto.UserRate.Active = true;
+
+                    userDto.UserRate.RateItems?.ForEach(f => {
+                        f.ServiceType = null;
+                        f.SourceLanguage = null;
+                        f.TargetLanguage = null;
+                        f.Active = true;
+                        f.CreatedBy = createdBy;
+                    });
+
+                    userDto.UserRate.UserDocuments?.ForEach(f => {
+                        f.Active = true;
+                        f.CreatedBy = createdBy;
+                    });
+
                     var userRate = _customMapperConfiguration.GetMapEntity<UserRate, UserRateDto>(userDto.UserRate);
                     _model.UserRates.Add(userRate);
 
@@ -490,6 +554,46 @@ namespace System.Business.Services {
                     userRate.UpdatedAt = DateTime.Now;
                     userRate.UpdatedBy = createdBy;
 
+                    if (userDto.UserRate.RateItems?.Count > 0) {
+                        if (user.UserRate.RateItems?.Count > 0) {
+                            user.UserRate.RateItems.ForEach(f => {
+                                var rateItem = userDto.UserRate.RateItems.FirstOrDefault(a => a.Id == f.Id);
+                                if (rateItem == null)
+                                    _model.Entry(f).State = EntityState.Deleted;
+                            });
+                        }
+                        foreach (RateItemDto rateItemDto in userDto.UserRate.RateItems) {
+                            if (rateItemDto.Id == default(int)) {
+                                rateItemDto.CreatedBy = createdBy;
+                                rateItemDto.Active = true;
+
+                                rateItemDto.ServiceType = null;
+                                rateItemDto.SourceLanguage = null;
+                                rateItemDto.TargetLanguage = null;
+
+                                var rateItem =
+                                    _customMapperConfiguration.GetMapEntity<RateItem, RateItemDto>
+                                        (rateItemDto);
+                                _model.RateItems.Add(rateItem);
+                            } else {
+                                var rateItem =
+                                    user.UserRate.RateItems?.FirstOrDefault(
+                                        f => f.Id == rateItemDto.Id);
+                                if (rateItem != null) {
+                                    rateItem.CertificateId = rateItemDto.CertificateId;
+                                    rateItem.Price = rateItemDto.Price;
+                                    rateItem.ServiceTypeId = rateItemDto.ServiceTypeId;
+                                    rateItem.SourceLanguageId = rateItemDto.SourceLanguageId;
+                                    rateItem.SwornOrCertified = rateItemDto.SwornOrCertified;
+                                    rateItem.TargetLanguageId = rateItemDto.TargetLanguageId;
+
+                                }
+                            }
+                        }
+                    } else {
+                        _model.RateItems.RemoveRange(user.UserRate.RateItems);
+                    }
+
                 }
 
                 if (_model.SaveChanges() <= 0) {
@@ -501,24 +605,46 @@ namespace System.Business.Services {
             } catch (Exception exc) {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
-                Log.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
             }
             return serviceResult;
         }
+
         public ServiceResult GetTechnologyKnowledgesByUserAbilityId(int userAbilityId) {
             var serviceResult = new ServiceResult();
             try {
-                var users = _model.TechnologyKnowledges
+                var data = _model.TechnologyKnowledges
                     .Include(a => a.Software)
                     .Where(w => w.UserAbilityId == userAbilityId)
                     .ToList();
 
                 serviceResult.ServiceResultType = ServiceResultType.Success;
-                serviceResult.Data = users.Select(s => _customMapperConfiguration.GetMapDto<TechnologyKnowledgeDto, TechnologyKnowledge>(s)).ToList();
+                serviceResult.Data = data.Select(s => _customMapperConfiguration.GetMapDto<TechnologyKnowledgeDto, TechnologyKnowledge>(s)).ToList();
             } catch (Exception exc) {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
-                Log.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+            }
+            return serviceResult;
+        }
+
+        public ServiceResult GetRateItemsByUserRateId(int userRateId) {
+            var serviceResult = new ServiceResult();
+            try {
+                var data = _model.RateItems
+                    .Include(a => a.Certificate)
+                    .Include(a => a.ServiceType)
+                    .Include(a => a.SourceLanguage)
+                    .Include(a => a.TargetLanguage)
+                    .Where(w => w.UserRateId == userRateId)
+                    .ToList();
+
+                serviceResult.ServiceResultType = ServiceResultType.Success;
+                serviceResult.Data = data.Select(s => _customMapperConfiguration.GetMapDto<RateItemDto, RateItem>(s)).ToList();
+            } catch (Exception exc) {
+                serviceResult.Exception = exc;
+                serviceResult.ServiceResultType = ServiceResultType.Fail;
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
             }
             return serviceResult;
         }

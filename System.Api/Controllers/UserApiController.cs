@@ -90,6 +90,37 @@ namespace System.Api.Controllers {
             return response;
         }
 
+        [HttpPost, Route("editUserPayment")]
+        public HttpResponseMessage EditUserPayment(UserDto userDto) {
+            var response = new HttpResponseMessage();
+            var serviceResult = _userService.AddOrUpdateUserPayment(userDto, 1);
+            if (serviceResult.ServiceResultType != ServiceResultType.Success) {
+                response.StatusCode = HttpStatusCode.InternalServerError;
+                return response;
+            }
+
+
+            response.StatusCode = HttpStatusCode.OK;
+            response.Content = new ObjectContent(serviceResult.Data.GetType(), serviceResult.Data, Formatter);
+            return response;
+        }
+
+        [HttpPost, Route("editUserRate")]
+        public HttpResponseMessage EditUserRate(UserDto userDto) {
+            var response = new HttpResponseMessage();
+            var serviceResult = _userService.AddOrUpdateUserRate(userDto, 1);
+            if (serviceResult.ServiceResultType != ServiceResultType.Success) {
+                response.StatusCode = HttpStatusCode.InternalServerError;
+                return response;
+            }
+
+
+            response.StatusCode = HttpStatusCode.OK;
+            response.Content = new ObjectContent(serviceResult.Data.GetType(), serviceResult.Data, Formatter);
+            return response;
+        }
+
+
         [HttpGet, Route("getTechnologyKnowledgesByUserAbilityId")]
         public HttpResponseMessage GetTechnologyKnowledgesByUserAbilityId([FromUri]int userAbilityId) {
             var response = new HttpResponseMessage();
@@ -103,11 +134,10 @@ namespace System.Api.Controllers {
             response.Content = new ObjectContent(serviceResult.Data.GetType(), serviceResult.Data, Formatter);
             return response;
         }
-
-        [HttpGet, Route("getTranslatorsAccordingToOrderTranslationQuality")]
-        public HttpResponseMessage GetTranslatorsAccordingToOrderTranslationQuality([FromUri] int orderId) {
+        [HttpGet, Route("getRateItemsByUserRateId")]
+        public HttpResponseMessage GetRateItemsByUserRateId([FromUri]int userRateId) {
             var response = new HttpResponseMessage();
-            var serviceResult = _userService.GetTranslatorsAccordingToOrderTranslationQuality(orderId);
+            var serviceResult = _userService.GetRateItemsByUserRateId(userRateId);
             if (serviceResult.ServiceResultType != ServiceResultType.Success) {
                 response.StatusCode = HttpStatusCode.InternalServerError;
                 return response;
@@ -116,6 +146,17 @@ namespace System.Api.Controllers {
             response.StatusCode = HttpStatusCode.OK;
             response.Content = new ObjectContent(serviceResult.Data.GetType(), serviceResult.Data, Formatter);
             return response;
+        }
+
+
+        [HttpGet, Route("getTranslatorsAccordingToOrderTranslationQuality")]
+        public HttpResponseMessage GetTranslatorsAccordingToOrderTranslationQuality([FromUri] int orderId) {
+            var serviceResult = _userService.GetTranslatorsAccordingToOrderTranslationQuality(orderId);
+            if (serviceResult.ServiceResultType != ServiceResultType.Success) {
+                return Error(serviceResult);
+            }
+
+            return OK(serviceResult.Data);
         }
 
     }
