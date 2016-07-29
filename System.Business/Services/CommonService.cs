@@ -22,10 +22,10 @@ using Tangent.CeviriDukkani.Domain.Mappers;
 namespace System.Business.Services {
     public class CommonService : ICommonService {
         private readonly CeviriDukkaniModel _ceviriDukkaniModel;
-        private readonly ICustomMapperConfiguration _customMapperConfiguration;
+        private readonly CustomMapperConfiguration _customMapperConfiguration;
         private readonly ILog _logger;
 
-        public CommonService(CeviriDukkaniModel ceviriDukkaniModel, ICustomMapperConfiguration customMapperConfiguration,ILog logger) {
+        public CommonService(CeviriDukkaniModel ceviriDukkaniModel, CustomMapperConfiguration customMapperConfiguration,ILog logger) {
             _ceviriDukkaniModel = ceviriDukkaniModel;
             _customMapperConfiguration = customMapperConfiguration;
             _logger = logger;

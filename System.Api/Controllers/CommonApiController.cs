@@ -18,6 +18,15 @@ namespace System.Api.Controllers {
             _commonService = commonService;
         }
 
+        [Route("login"), HttpPost]
+        public HttpResponseMessage Login(LoginRequestDto loginRequest) {
+            ServiceResult serviceResult = _commonService.Login(loginRequest.Email, loginRequest.Password);
+            if (serviceResult.ServiceResultType != ServiceResultType.Success) {
+                return Error(serviceResult);
+            }
+
+            return OK(serviceResult);
+        }
         [Route("changePassword"), HttpPost]
         public HttpResponseMessage ChangePassword([FromBody]ChangePasswordRequestDto changePasswordRequest) {
             ServiceResult serviceResult = _commonService.ChangePassword(changePasswordRequest.Email, changePasswordRequest.OldPassword, changePasswordRequest.NewPassword);
@@ -27,7 +36,6 @@ namespace System.Api.Controllers {
 
             return OK(serviceResult);
         }
-
         [HttpGet, Route("getCompanies")]
         public HttpResponseMessage GetCompanies() {
             var serviceResult = _commonService.GetCompanies();
@@ -55,7 +63,6 @@ namespace System.Api.Controllers {
 
             return OK(serviceResult.Data);
         }
-
         [HttpGet, Route("getLanguages")]
         public HttpResponseMessage GetLanguages() {
             var response = new HttpResponseMessage();
@@ -84,7 +91,6 @@ namespace System.Api.Controllers {
 
             return OK(serviceResult.Data);
         }
-
         [HttpGet, Route("getTargetLanguages")]
         public HttpResponseMessage GetTargetLanguages([FromUri]int sourceLanguageId) {
             ServiceResult serviceResult = _commonService.GetTargetLanguages(sourceLanguageId);
@@ -112,7 +118,6 @@ namespace System.Api.Controllers {
 
             return OK(serviceResult.Data);
         }
-
         [HttpGet, Route("getTerminologies")]
         public HttpResponseMessage GetTerminologies() {
             var serviceResult = _commonService.GetTerminologies();
@@ -140,7 +145,6 @@ namespace System.Api.Controllers {
 
             return OK(serviceResult.Data);
         }
-
         [HttpGet, Route("getPriceLists")]
         public HttpResponseMessage GetPriceLists() {
             var serviceResult = _commonService.GetPriceLists();
@@ -168,7 +172,6 @@ namespace System.Api.Controllers {
 
             return OK(serviceResult.Data);
         }
-
         [HttpGet, Route("getCompanyTerminologies")]
         public HttpResponseMessage GetCompanyTerminologies() {
             var serviceResult = _commonService.GetCompanyTerminologies();
@@ -205,7 +208,6 @@ namespace System.Api.Controllers {
 
             return OK(serviceResult.Data);
         }
-
         [HttpPost, Route("addMessage")]
         public HttpResponseMessage AddMessage(MessageDto messageDto) {
             var serviceResult = _commonService.AddMessage(messageDto, 1);
@@ -269,7 +271,6 @@ namespace System.Api.Controllers {
 
             return OK(serviceResult.Data);
         }
-
         [HttpGet, Route("getUserRoleTypes")]
         public HttpResponseMessage GetUserRoleTypes() {
             var serviceResult = _commonService.GetUserRoleTypes();
@@ -279,7 +280,6 @@ namespace System.Api.Controllers {
 
             return OK(serviceResult.Data);
         }
-
         [HttpGet, Route("getCountries")]
         public HttpResponseMessage GetCountries() {
             var serviceResult = _commonService.GetCountries();
@@ -289,7 +289,6 @@ namespace System.Api.Controllers {
 
             return OK(serviceResult.Data);
         }
-
         [HttpGet, Route("getCitiesByCountryId")]
         public HttpResponseMessage GetCitiesByCountryId([FromUri]int countryId) {
             var serviceResult = _commonService.GetCitiesByCountryId(countryId);
@@ -308,7 +307,6 @@ namespace System.Api.Controllers {
 
             return OK(serviceResult.Data);
         }
-
         [HttpGet, Route("getTongues")]
         public HttpResponseMessage GetTongues() {
             var serviceResult = _commonService.GetTongues();

@@ -17,11 +17,11 @@ using EntityState = System.Data.Entity.EntityState;
 namespace System.Business.Services {
     public class UserService : IUserService {
         private readonly CeviriDukkaniModel _model;
-        private readonly ICustomMapperConfiguration _customMapperConfiguration;
+        private readonly CustomMapperConfiguration _customMapperConfiguration;
         private readonly ILog _logger;
         //private readonly IMailService _mailService;
 
-        public UserService(CeviriDukkaniModel model, ICustomMapperConfiguration customMapperConfiguration,ILog logger) {
+        public UserService(CeviriDukkaniModel model, CustomMapperConfiguration customMapperConfiguration,ILog logger) {
             _model = model;
             _customMapperConfiguration = customMapperConfiguration;
             _logger = logger;

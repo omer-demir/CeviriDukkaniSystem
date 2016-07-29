@@ -11,8 +11,6 @@ using Tangent.CeviriDukkani.Domain.Mappers;
 using Tangent.CeviriDukkani.Logging;
 using Tangent.CeviriDukkani.Messaging;
 using Tangent.CeviriDukkani.Messaging.Producer;
-//using Microsoft.Owin.Hosting;
-//using Tangent.CeviriDukkani.Data.Model;
 
 namespace System.Api {
     class Program {
