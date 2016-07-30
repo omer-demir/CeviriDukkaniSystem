@@ -156,7 +156,7 @@ namespace System.Api.Controllers {
                 return Error(serviceResult);
             }
 
-            return OK(serviceResult.Data);
+            return OK(serviceResult);
         }
 
     }

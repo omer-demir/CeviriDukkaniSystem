@@ -36,6 +36,69 @@ namespace System.Api.Controllers {
 
             return OK(serviceResult);
         }
+        [HttpPost, Route("addMessage")]
+        public HttpResponseMessage AddMessage(MessageDto messageDto) {
+            var serviceResult = _commonService.AddMessage(messageDto, 1);
+            if (serviceResult.ServiceResultType != ServiceResultType.Success) {
+                return Error(serviceResult);
+            }
+
+            return OK(serviceResult.Data);
+        }
+        [HttpGet, Route("getIncomingMessages")]
+        public HttpResponseMessage GetIncomingMessages([FromUri]int userId) {
+            var serviceResult = _commonService.GetIncomingMessages(userId);
+            if (serviceResult.ServiceResultType != ServiceResultType.Success) {
+                return Error(serviceResult);
+            }
+
+            return OK(serviceResult.Data);
+        }
+        [HttpGet, Route("getSentMessages")]
+        public HttpResponseMessage GetSentMessages([FromUri]int userId) {
+            var serviceResult = _commonService.GetSentMessages(userId);
+            if (serviceResult.ServiceResultType != ServiceResultType.Success) {
+                return Error(serviceResult);
+            }
+
+            return OK(serviceResult.Data);
+        }
+        [HttpGet, Route("getMessage")]
+        public HttpResponseMessage GetMessage([FromUri]int messageId) {
+            var serviceResult = _commonService.GetMessage(messageId);
+            if (serviceResult.ServiceResultType != ServiceResultType.Success) {
+                return Error(serviceResult);
+            }
+
+            return OK(serviceResult.Data);
+        }
+        [HttpGet, Route("updateMessageForReadDate")]
+        public HttpResponseMessage UpdateMessageForReadDate([FromUri]int messageId) {
+            var serviceResult = _commonService.UpdateMessageForReadDate(messageId);
+            if (serviceResult.ServiceResultType != ServiceResultType.Success) {
+                return Error(serviceResult);
+            }
+
+            return OK(serviceResult.Data);
+        }
+        [HttpGet, Route("deleteSentMessage")]
+        public HttpResponseMessage DeleteSentMessage([FromUri]int messageId) {
+            var serviceResult = _commonService.DeleteSentMessage(messageId);
+            if (serviceResult.ServiceResultType != ServiceResultType.Success) {
+                return Error(serviceResult);
+            }
+
+            return OK(serviceResult.Data);
+        }
+        [HttpGet, Route("deleteIncomingMessage")]
+        public HttpResponseMessage DeleteIncomingMessage([FromUri]int messageId) {
+            var serviceResult = _commonService.DeleteIncomingMessage(messageId);
+            if (serviceResult.ServiceResultType != ServiceResultType.Success) {
+                return Error(serviceResult);
+            }
+
+            return OK(serviceResult.Data);
+        }
         [HttpGet, Route("getCompanies")]
         public HttpResponseMessage GetCompanies() {
             var serviceResult = _commonService.GetCompanies();
@@ -208,69 +271,7 @@ namespace System.Api.Controllers {
 
             return OK(serviceResult.Data);
         }
-        [HttpPost, Route("addMessage")]
-        public HttpResponseMessage AddMessage(MessageDto messageDto) {
-            var serviceResult = _commonService.AddMessage(messageDto, 1);
-            if (serviceResult.ServiceResultType != ServiceResultType.Success) {
-                return Error(serviceResult);
-            }
-
-            return OK(serviceResult.Data);
-        }
-        [HttpGet, Route("getIncomingMessages")]
-        public HttpResponseMessage GetIncomingMessages([FromUri]int userId) {
-            var serviceResult = _commonService.GetIncomingMessages(userId);
-            if (serviceResult.ServiceResultType != ServiceResultType.Success) {
-                return Error(serviceResult);
-            }
-
-            return OK(serviceResult.Data);
-        }
-        [HttpGet, Route("getSentMessages")]
-        public HttpResponseMessage GetSentMessages([FromUri]int userId) {
-            var serviceResult = _commonService.GetSentMessages(userId);
-            if (serviceResult.ServiceResultType != ServiceResultType.Success) {
-                return Error(serviceResult);
-            }
-
-            return OK(serviceResult.Data);
-        }
-        [HttpGet, Route("getMessage")]
-        public HttpResponseMessage GetMessage([FromUri]int messageId) {
-            var serviceResult = _commonService.GetMessage(messageId);
-            if (serviceResult.ServiceResultType != ServiceResultType.Success) {
-                return Error(serviceResult);
-            }
-
-            return OK(serviceResult.Data);
-        }
-        [HttpGet, Route("updateMessageForReadDate")]
-        public HttpResponseMessage UpdateMessageForReadDate([FromUri]int messageId) {
-            var serviceResult = _commonService.UpdateMessageForReadDate(messageId);
-            if (serviceResult.ServiceResultType != ServiceResultType.Success) {
-                return Error(serviceResult);
-            }
-
-            return OK(serviceResult.Data);
-        }
-        [HttpGet, Route("deleteSentMessage")]
-        public HttpResponseMessage DeleteSentMessage([FromUri]int messageId) {
-            var serviceResult = _commonService.DeleteSentMessage(messageId);
-            if (serviceResult.ServiceResultType != ServiceResultType.Success) {
-                return Error(serviceResult);
-            }
-
-            return OK(serviceResult.Data);
-        }
-        [HttpGet, Route("deleteIncomingMessage")]
-        public HttpResponseMessage DeleteIncomingMessage([FromUri]int messageId) {
-            var serviceResult = _commonService.DeleteIncomingMessage(messageId);
-            if (serviceResult.ServiceResultType != ServiceResultType.Success) {
-                return Error(serviceResult);
-            }
-
-            return OK(serviceResult.Data);
-        }
+        
         [HttpGet, Route("getUserRoleTypes")]
         public HttpResponseMessage GetUserRoleTypes() {
             var serviceResult = _commonService.GetUserRoleTypes();
@@ -328,6 +329,78 @@ namespace System.Api.Controllers {
         [HttpGet, Route("getSoftwares")]
         public HttpResponseMessage GetSoftwares() {
             var serviceResult = _commonService.GetSoftwares();
+            if (serviceResult.ServiceResultType != ServiceResultType.Success) {
+                return Error(serviceResult);
+            }
+
+            return OK(serviceResult.Data);
+        }
+        [HttpGet, Route("getBankAccountTypes")]
+        public HttpResponseMessage GetBankAccountTypes() {
+            var serviceResult = _commonService.GetBankAccountTypes();
+            if (serviceResult.ServiceResultType != ServiceResultType.Success) {
+                return Error(serviceResult);
+            }
+
+            return OK(serviceResult.Data);
+        }
+        [HttpGet, Route("getCurrencies")]
+        public HttpResponseMessage GetCurrencies() {
+            var serviceResult = _commonService.GetCurrencies();
+            if (serviceResult.ServiceResultType != ServiceResultType.Success) {
+                return Error(serviceResult);
+            }
+
+            return OK(serviceResult.Data);
+        }
+        [HttpGet, Route("getWorkingTypes")]
+        public HttpResponseMessage GetWorkingTypes() {
+            var serviceResult = _commonService.GetWorkingTypes();
+            if (serviceResult.ServiceResultType != ServiceResultType.Success) {
+                return Error(serviceResult);
+            }
+
+            return OK(serviceResult.Data);
+        }
+        [HttpGet, Route("getServiceTypes")]
+        public HttpResponseMessage GetServiceTypes() {
+            var serviceResult = _commonService.GetServiceTypes();
+            if (serviceResult.ServiceResultType != ServiceResultType.Success) {
+                return Error(serviceResult);
+            }
+
+            return OK(serviceResult.Data);
+        }
+        [HttpGet, Route("getCompany")]
+        public HttpResponseMessage GetCompany(int id) {
+            var serviceResult = _commonService.GetCompany(id);
+            if (serviceResult.ServiceResultType != ServiceResultType.Success) {
+                return Error(serviceResult);
+            }
+
+            return OK(serviceResult.Data);
+        }
+        [HttpGet, Route("getLanguage")]
+        public HttpResponseMessage GetLanguage(int id) {
+            var serviceResult = _commonService.GetLanguage(id);
+            if (serviceResult.ServiceResultType != ServiceResultType.Success) {
+                return Error(serviceResult);
+            }
+
+            return OK(serviceResult.Data);
+        }
+        [HttpGet, Route("getPriceList")]
+        public HttpResponseMessage GetPriceList(int id) {
+            var serviceResult = _commonService.GetPriceList(id);
+            if (serviceResult.ServiceResultType != ServiceResultType.Success) {
+                return Error(serviceResult);
+            }
+
+            return OK(serviceResult.Data);
+        }
+        [HttpGet, Route("getCompanyTerminology")]
+        public HttpResponseMessage GetCompanyTerminology(int id) {
+            var serviceResult = _commonService.GetCompanyTerminology(id);
             if (serviceResult.ServiceResultType != ServiceResultType.Success) {
                 return Error(serviceResult);
             }

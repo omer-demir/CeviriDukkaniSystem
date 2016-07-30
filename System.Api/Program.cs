@@ -27,7 +27,7 @@ namespace System.Api {
 
             Console.WriteLine("Starting to close SS...");
 
-            Container.Resolve<IConnection>().Close();
+            //Container.Resolve<IConnection>().Close();
         }
 
         public static void Bootstrapper() {
