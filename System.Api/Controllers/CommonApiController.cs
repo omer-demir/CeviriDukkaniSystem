@@ -6,6 +6,7 @@ using Tangent.CeviriDukkani.Domain.Common;
 using Tangent.CeviriDukkani.Domain.Dto.Common;
 using Tangent.CeviriDukkani.Domain.Dto.Request;
 using Tangent.CeviriDukkani.Domain.Dto.Sale;
+using Tangent.CeviriDukkani.Domain.Dto.System;
 using Tangent.CeviriDukkani.Domain.Dto.Translation;
 using Tangent.CeviriDukkani.WebCore.BaseControllers;
 
@@ -20,16 +21,16 @@ namespace System.Api.Controllers {
 
         [Route("login"), HttpPost]
         public HttpResponseMessage Login(LoginRequestDto loginRequest) {
-            ServiceResult serviceResult = _commonService.Login(loginRequest.Email, loginRequest.Password);
+            var response = new HttpResponseMessage();
+            ServiceResult<UserDto> serviceResult = _commonService.Login(loginRequest.Email, loginRequest.Password);
             if (serviceResult.ServiceResultType != ServiceResultType.Success) {
                 return Error(serviceResult);
             }
-
             return OK(serviceResult);
         }
         [Route("changePassword"), HttpPost]
         public HttpResponseMessage ChangePassword([FromBody]ChangePasswordRequestDto changePasswordRequest) {
-            ServiceResult serviceResult = _commonService.ChangePassword(changePasswordRequest.Email, changePasswordRequest.OldPassword, changePasswordRequest.NewPassword);
+            ServiceResult<UserDto> serviceResult = _commonService.ChangePassword(changePasswordRequest.Email, changePasswordRequest.OldPassword, changePasswordRequest.NewPassword);
             if (serviceResult.ServiceResultType != ServiceResultType.Success) {
                 return Error(serviceResult);
             }
@@ -156,7 +157,7 @@ namespace System.Api.Controllers {
         }
         [HttpGet, Route("getTargetLanguages")]
         public HttpResponseMessage GetTargetLanguages([FromUri]int sourceLanguageId) {
-            ServiceResult serviceResult = _commonService.GetTargetLanguages(sourceLanguageId);
+            var serviceResult = _commonService.GetTargetLanguages(sourceLanguageId);
             if (serviceResult.ServiceResultType != ServiceResultType.Success) {
                 return Error(serviceResult);
             }

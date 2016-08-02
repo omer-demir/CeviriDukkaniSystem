@@ -25,14 +25,14 @@ namespace System.Business.Services {
         private readonly CustomMapperConfiguration _customMapperConfiguration;
         private readonly ILog _logger;
 
-        public CommonService(CeviriDukkaniModel ceviriDukkaniModel, CustomMapperConfiguration customMapperConfiguration,ILog logger) {
+        public CommonService(CeviriDukkaniModel ceviriDukkaniModel, CustomMapperConfiguration customMapperConfiguration, ILog logger) {
             _ceviriDukkaniModel = ceviriDukkaniModel;
             _customMapperConfiguration = customMapperConfiguration;
             _logger = logger;
         }
 
-        public ServiceResult Login(string email, string password) {
-            var serviceResult = new ServiceResult();
+        public ServiceResult<UserDto> Login(string email, string password) {
+            var serviceResult = new ServiceResult<UserDto>();
             try {
                 var passwordRetryCount = int.Parse(ConfigurationManager.AppSettings["PasswordRetryCount"]);
                 var user = _ceviriDukkaniModel.Users
@@ -58,9 +58,10 @@ namespace System.Business.Services {
                         throw new DbOperationException(ExceptionCodes.UserLockedOut);
                     }
                     _ceviriDukkaniModel.SaveChanges();
+                    user.PasswordRetryCount ++;
 
                     serviceResult.Message = $"Wrong password for user email {email}";
-                    serviceResult.Data = passwordRetryCount - user.PasswordRetryCount;
+                    serviceResult.Data = _customMapperConfiguration.GetMapDto<UserDto, User>(user);
                     throw new DbOperationException(ExceptionCodes.WrongPasswordForUser);
                 }
 
@@ -81,8 +82,8 @@ namespace System.Business.Services {
 
             return serviceResult;
         }
-        public ServiceResult ChangePassword(string email, string oldPassword, string newPassword) {
-            var serviceResult = new ServiceResult();
+        public ServiceResult<UserDto> ChangePassword(string email, string oldPassword, string newPassword) {
+            var serviceResult = new ServiceResult<UserDto>();
             try {
                 var passwordRetryCount = int.Parse(ConfigurationManager.AppSettings["PasswordRetryCount"]);
                 var user = _ceviriDukkaniModel.Users.FirstOrDefault(w => w.Email == email && w.Password == oldPassword);
@@ -108,8 +109,8 @@ namespace System.Business.Services {
 
             return serviceResult;
         }
-        public ServiceResult AddMessage(MessageDto messageDto, int createdBy) {
-            var serviceResult = new ServiceResult();
+        public ServiceResult<MessageDto> AddMessage(MessageDto messageDto, int createdBy) {
+            var serviceResult = new ServiceResult<MessageDto>();
             try {
                 messageDto.CreatedBy = createdBy;
                 messageDto.Active = true;
@@ -131,8 +132,8 @@ namespace System.Business.Services {
             }
             return serviceResult;
         }
-        public ServiceResult GetIncomingMessages(int userId) {
-            var serviceResult = new ServiceResult();
+        public ServiceResult<List<MessageDto>> GetIncomingMessages(int userId) {
+            var serviceResult = new ServiceResult<List<MessageDto>>();
             try {
                 var messages = _ceviriDukkaniModel.Messages.Where(w => w.ToUserId == userId && w.ToStatus).ToList();
 
@@ -145,8 +146,8 @@ namespace System.Business.Services {
             }
             return serviceResult;
         }
-        public ServiceResult GetSentMessages(int userId) {
-            var serviceResult = new ServiceResult();
+        public ServiceResult<List<MessageDto>> GetSentMessages(int userId) {
+            var serviceResult = new ServiceResult<List<MessageDto>>();
             try {
                 var messages = _ceviriDukkaniModel.Messages.Where(w => w.FromUserId == userId && w.FromStatus).ToList();
 
@@ -159,8 +160,8 @@ namespace System.Business.Services {
             }
             return serviceResult;
         }
-        public ServiceResult GetMessage(int messageId) {
-            var serviceResult = new ServiceResult();
+        public ServiceResult<MessageDto> GetMessage(int messageId) {
+            var serviceResult = new ServiceResult<MessageDto>();
             try {
                 var message = _ceviriDukkaniModel.Messages.Find(messageId);
                 if (message == null) {
@@ -176,8 +177,8 @@ namespace System.Business.Services {
             }
             return serviceResult;
         }
-        public ServiceResult UpdateMessageForReadDate(int messageId) {
-            var serviceResult = new ServiceResult();
+        public ServiceResult<MessageDto> UpdateMessageForReadDate(int messageId) {
+            var serviceResult = new ServiceResult<MessageDto>();
             try {
                 var message = _ceviriDukkaniModel.Messages.FirstOrDefault(w => w.Id == messageId);
                 if (message == null) {
@@ -197,8 +198,8 @@ namespace System.Business.Services {
             }
             return serviceResult;
         }
-        public ServiceResult DeleteSentMessage(int messageId) {
-            var serviceResult = new ServiceResult();
+        public ServiceResult<MessageDto> DeleteSentMessage(int messageId) {
+            var serviceResult = new ServiceResult<MessageDto>();
             try {
                 var message = _ceviriDukkaniModel.Messages.FirstOrDefault(w => w.Id == messageId);
                 if (message == null) {
@@ -218,8 +219,8 @@ namespace System.Business.Services {
             }
             return serviceResult;
         }
-        public ServiceResult DeleteIncomingMessage(int messageId) {
-            var serviceResult = new ServiceResult();
+        public ServiceResult<MessageDto> DeleteIncomingMessage(int messageId) {
+            var serviceResult = new ServiceResult<MessageDto>();
             try {
                 var message = _ceviriDukkaniModel.Messages.FirstOrDefault(w => w.Id == messageId);
                 if (message == null) {
@@ -239,8 +240,8 @@ namespace System.Business.Services {
             }
             return serviceResult;
         }
-        public ServiceResult GetCompanies() {
-            var serviceResult = new ServiceResult();
+        public ServiceResult<List<CompanyDto>> GetCompanies() {
+            var serviceResult = new ServiceResult<List<CompanyDto>>();
             try {
                 var companies = _ceviriDukkaniModel.Companies.Where(w => w.Active).ToList();
 
@@ -253,8 +254,8 @@ namespace System.Business.Services {
             }
             return serviceResult;
         }
-        public ServiceResult AddCompany(CompanyDto companyDto, int createdBy) {
-            var serviceResult = new ServiceResult();
+        public ServiceResult<CompanyDto> AddCompany(CompanyDto companyDto, int createdBy) {
+            var serviceResult = new ServiceResult<CompanyDto>();
             try {
                 companyDto.CreatedBy = createdBy;
                 companyDto.Active = true;
@@ -274,8 +275,8 @@ namespace System.Business.Services {
             }
             return serviceResult;
         }
-        public ServiceResult UpdateCompany(CompanyDto companyDto, int createdBy) {
-            var serviceResult = new ServiceResult();
+        public ServiceResult<CompanyDto> UpdateCompany(CompanyDto companyDto, int createdBy) {
+            var serviceResult = new ServiceResult<CompanyDto>();
             try {
 
                 var company = _ceviriDukkaniModel.Companies.FirstOrDefault(f => f.Id == companyDto.Id);
@@ -309,8 +310,8 @@ namespace System.Business.Services {
             }
             return serviceResult;
         }
-        public ServiceResult GetCompany(int companyId) {
-            var serviceResult = new ServiceResult();
+        public ServiceResult<CompanyDto> GetCompany(int companyId) {
+            var serviceResult = new ServiceResult<CompanyDto>();
             try {
                 var company = _ceviriDukkaniModel.Companies.Find(companyId);
                 if (company == null) {
@@ -325,8 +326,8 @@ namespace System.Business.Services {
             }
             return serviceResult;
         }
-        public ServiceResult GetLanguages() {
-            var serviceResult = new ServiceResult();
+        public ServiceResult<List<LanguageDto>> GetLanguages() {
+            var serviceResult = new ServiceResult<List<LanguageDto>>();
             try {
                 var languages = _ceviriDukkaniModel.Languages.ToList();
 
@@ -339,8 +340,8 @@ namespace System.Business.Services {
             }
             return serviceResult;
         }
-        public ServiceResult AddLanguage(LanguageDto languageDto, int createdBy) {
-            var serviceResult = new ServiceResult();
+        public ServiceResult<LanguageDto> AddLanguage(LanguageDto languageDto, int createdBy) {
+            var serviceResult = new ServiceResult<LanguageDto>();
             try {
                 languageDto.CreatedBy = createdBy;
                 languageDto.Active = true;
@@ -360,8 +361,8 @@ namespace System.Business.Services {
             }
             return serviceResult;
         }
-        public ServiceResult UpdateLanguage(LanguageDto languageDto, int createdBy) {
-            var serviceResult = new ServiceResult();
+        public ServiceResult<LanguageDto> UpdateLanguage(LanguageDto languageDto, int createdBy) {
+            var serviceResult = new ServiceResult<LanguageDto>();
             try {
 
                 var language = _ceviriDukkaniModel.Languages.FirstOrDefault(f => f.Id == languageDto.Id);
@@ -384,8 +385,8 @@ namespace System.Business.Services {
             }
             return serviceResult;
         }
-        public ServiceResult GetLanguage(int languageId) {
-            var serviceResult = new ServiceResult();
+        public ServiceResult<LanguageDto> GetLanguage(int languageId) {
+            var serviceResult = new ServiceResult<LanguageDto>();
             try {
                 var language = _ceviriDukkaniModel.Languages.Find(languageId);
                 if (language == null) {
@@ -400,8 +401,8 @@ namespace System.Business.Services {
             }
             return serviceResult;
         }
-        public ServiceResult GetTargetLanguages(int sourceLanguageId) {
-            var serviceResult = new ServiceResult();
+        public ServiceResult<List<SourceTargetLanguageDto>> GetTargetLanguages(int sourceLanguageId) {
+            var serviceResult = new ServiceResult<List<SourceTargetLanguageDto>>();
             try {
                 var languages = _ceviriDukkaniModel.SourceTargetLanguages.Where(w => w.SourceLanguageId == sourceLanguageId).ToList();
 
@@ -414,8 +415,8 @@ namespace System.Business.Services {
             }
             return serviceResult;
         }
-        public ServiceResult AddSourceTargetLanguages(SourceTargetLanguageDto sourceTargetLanguageDto, int createdBy) {
-            var serviceResult = new ServiceResult();
+        public ServiceResult<SourceTargetLanguageDto> AddSourceTargetLanguages(SourceTargetLanguageDto sourceTargetLanguageDto, int createdBy) {
+            var serviceResult = new ServiceResult<SourceTargetLanguageDto>();
             try {
                 sourceTargetLanguageDto.CreatedBy = createdBy;
                 sourceTargetLanguageDto.Active = true;
@@ -457,8 +458,8 @@ namespace System.Business.Services {
             }
             return serviceResult;
         }
-        public ServiceResult GetTerminologies() {
-            var serviceResult = new ServiceResult();
+        public ServiceResult<List<TerminologyDto>> GetTerminologies() {
+            var serviceResult = new ServiceResult<List<TerminologyDto>>();
             try {
                 var languages = _ceviriDukkaniModel.Terminologies.ToList();
 
@@ -471,8 +472,8 @@ namespace System.Business.Services {
             }
             return serviceResult;
         }
-        public ServiceResult AddTerminology(TerminologyDto terminologyDto, int createdBy) {
-            var serviceResult = new ServiceResult();
+        public ServiceResult<TerminologyDto> AddTerminology(TerminologyDto terminologyDto, int createdBy) {
+            var serviceResult = new ServiceResult<TerminologyDto>();
             try {
                 terminologyDto.CreatedBy = createdBy;
                 terminologyDto.Active = true;
@@ -492,8 +493,8 @@ namespace System.Business.Services {
             }
             return serviceResult;
         }
-        public ServiceResult UpdateTerminology(TerminologyDto terminologyDto, int createdBy) {
-            var serviceResult = new ServiceResult();
+        public ServiceResult<TerminologyDto> UpdateTerminology(TerminologyDto terminologyDto, int createdBy) {
+            var serviceResult = new ServiceResult<TerminologyDto>();
             try {
 
                 var terminology = _ceviriDukkaniModel.Terminologies.FirstOrDefault(f => f.Id == terminologyDto.Id);
@@ -516,8 +517,8 @@ namespace System.Business.Services {
             }
             return serviceResult;
         }
-        public ServiceResult GetTerminology(int terminologyId) {
-            var serviceResult = new ServiceResult();
+        public ServiceResult<TerminologyDto> GetTerminology(int terminologyId) {
+            var serviceResult = new ServiceResult<TerminologyDto>();
             try {
                 var terminology = _ceviriDukkaniModel.Terminologies.Find(terminologyId);
                 if (terminology == null) {
@@ -532,8 +533,8 @@ namespace System.Business.Services {
             }
             return serviceResult;
         }
-        public ServiceResult GetPriceLists() {
-            var serviceResult = new ServiceResult();
+        public ServiceResult<List<PriceListDto>> GetPriceLists() {
+            var serviceResult = new ServiceResult<List<PriceListDto>> ();
             try {
                 var priceLists = _ceviriDukkaniModel.PriceLists.ToList();
 
@@ -546,8 +547,8 @@ namespace System.Business.Services {
             }
             return serviceResult;
         }
-        public ServiceResult AddPriceList(PriceListDto priceListDto, int createdBy) {
-            var serviceResult = new ServiceResult();
+        public ServiceResult<PriceListDto> AddPriceList(PriceListDto priceListDto, int createdBy) {
+            var serviceResult = new ServiceResult<PriceListDto>();
             try {
                 priceListDto.CreatedBy = createdBy;
                 priceListDto.Active = true;
@@ -567,8 +568,8 @@ namespace System.Business.Services {
             }
             return serviceResult;
         }
-        public ServiceResult UpdatePriceList(PriceListDto priceListDto, int createdBy) {
-            var serviceResult = new ServiceResult();
+        public ServiceResult<PriceListDto> UpdatePriceList(PriceListDto priceListDto, int createdBy) {
+            var serviceResult = new ServiceResult<PriceListDto>();
             try {
 
                 var priceList = _ceviriDukkaniModel.PriceLists.FirstOrDefault(f => f.Id == priceListDto.Id);
@@ -597,8 +598,8 @@ namespace System.Business.Services {
             }
             return serviceResult;
         }
-        public ServiceResult GetPriceList(int priceListId) {
-            var serviceResult = new ServiceResult();
+        public ServiceResult<PriceListDto> GetPriceList(int priceListId) {
+            var serviceResult = new ServiceResult<PriceListDto>();
             try {
                 var priceList = _ceviriDukkaniModel.PriceLists.Find(priceListId);
                 if (priceList == null) {
@@ -613,8 +614,8 @@ namespace System.Business.Services {
             }
             return serviceResult;
         }
-        public ServiceResult GetCompanyTerminologies() {
-            var serviceResult = new ServiceResult();
+        public ServiceResult<List<CompanyTerminologyDto>> GetCompanyTerminologies() {
+            var serviceResult = new ServiceResult<List<CompanyTerminologyDto>> ();
             try {
                 var companyTerminologies = _ceviriDukkaniModel.CompanyTerminologies.ToList();
 
@@ -627,8 +628,8 @@ namespace System.Business.Services {
             }
             return serviceResult;
         }
-        public ServiceResult AddCompanyTerminology(CompanyTerminologyDto companyTerminologyDto, int createdBy) {
-            var serviceResult = new ServiceResult();
+        public ServiceResult<CompanyTerminologyDto> AddCompanyTerminology(CompanyTerminologyDto companyTerminologyDto, int createdBy) {
+            var serviceResult = new ServiceResult<CompanyTerminologyDto>();
             try {
                 companyTerminologyDto.CreatedBy = createdBy;
                 companyTerminologyDto.Active = true;
@@ -648,8 +649,8 @@ namespace System.Business.Services {
             }
             return serviceResult;
         }
-        public ServiceResult UpdateCompanyTerminology(CompanyTerminologyDto companyTerminologyDto, int createdBy) {
-            var serviceResult = new ServiceResult();
+        public ServiceResult<CompanyTerminologyDto> UpdateCompanyTerminology(CompanyTerminologyDto companyTerminologyDto, int createdBy) {
+            var serviceResult = new ServiceResult<CompanyTerminologyDto>();
             try {
 
                 var companyTerminology = _ceviriDukkaniModel.CompanyTerminologies.FirstOrDefault(f => f.Id == companyTerminologyDto.Id);
@@ -674,8 +675,8 @@ namespace System.Business.Services {
             }
             return serviceResult;
         }
-        public ServiceResult DeleteCompanyTerminology(int companyTerminologyId) {
-            var serviceResult = new ServiceResult();
+        public ServiceResult<CompanyTerminologyDto> DeleteCompanyTerminology(int companyTerminologyId) {
+            var serviceResult = new ServiceResult<CompanyTerminologyDto>();
             try {
 
                 var companyTerminology = _ceviriDukkaniModel.CompanyTerminologies.FirstOrDefault(f => f.Id == companyTerminologyId);
@@ -696,8 +697,8 @@ namespace System.Business.Services {
             }
             return serviceResult;
         }
-        public ServiceResult GetCompanyTerminology(int companyTerminologyId) {
-            var serviceResult = new ServiceResult();
+        public ServiceResult<CompanyTerminologyDto> GetCompanyTerminology(int companyTerminologyId) {
+            var serviceResult = new ServiceResult<CompanyTerminologyDto>();
             try {
                 var companyTerminology = _ceviriDukkaniModel.CompanyTerminologies.Find(companyTerminologyId);
                 if (companyTerminology == null) {
@@ -768,8 +769,8 @@ namespace System.Business.Services {
             }
             return serviceResult;
         }
-        public ServiceResult GetTongues() {
-            var serviceResult = new ServiceResult();
+        public ServiceResult<List<TongueDto>> GetTongues() {
+            var serviceResult = new ServiceResult<List<TongueDto>>();
             try {
                 var data = _ceviriDukkaniModel.Tongues.Where(w => w.Active).ToList();
 
@@ -782,8 +783,8 @@ namespace System.Business.Services {
             }
             return serviceResult;
         }
-        public ServiceResult GetSpecializations() {
-            var serviceResult = new ServiceResult();
+        public ServiceResult<List<SpecializationDto>> GetSpecializations() {
+            var serviceResult = new ServiceResult<List<SpecializationDto>>();
             try {
                 var data = _ceviriDukkaniModel.Specializations.Include(a => a.Terminology).Where(w => w.Active).ToList();
 
@@ -796,8 +797,8 @@ namespace System.Business.Services {
             }
             return serviceResult;
         }
-        public ServiceResult GetSoftwares() {
-            var serviceResult = new ServiceResult();
+        public ServiceResult<List<SoftwareDto>> GetSoftwares() {
+            var serviceResult = new ServiceResult<List<SoftwareDto>>();
             try {
                 var data = _ceviriDukkaniModel.Softwares.Where(w => w.Active).ToList();
 
@@ -810,8 +811,8 @@ namespace System.Business.Services {
             }
             return serviceResult;
         }
-        public ServiceResult GetBankAccountTypes() {
-            var serviceResult = new ServiceResult();
+        public ServiceResult<List<BankAccountTypeDto>> GetBankAccountTypes() {
+            var serviceResult = new ServiceResult<List<BankAccountTypeDto>>();
             try {
                 var data = _ceviriDukkaniModel.BankAccountTypes.Where(w => w.Active).ToList();
 
@@ -824,8 +825,8 @@ namespace System.Business.Services {
             }
             return serviceResult;
         }
-        public ServiceResult GetCurrencies() {
-            var serviceResult = new ServiceResult();
+        public ServiceResult<List<CurrencyDto>> GetCurrencies() {
+            var serviceResult = new ServiceResult<List<CurrencyDto>>();
             try {
                 var data = _ceviriDukkaniModel.Currencies.Where(w => w.Active).ToList();
 
@@ -838,8 +839,8 @@ namespace System.Business.Services {
             }
             return serviceResult;
         }
-        public ServiceResult GetWorkingTypes() {
-            var serviceResult = new ServiceResult();
+        public ServiceResult<List<WorkingTypeDto>> GetWorkingTypes() {
+            var serviceResult = new ServiceResult<List<WorkingTypeDto>>();
             try {
                 var data = _ceviriDukkaniModel.WorkingTypes.Where(w => w.Active).ToList();
 
@@ -852,8 +853,8 @@ namespace System.Business.Services {
             }
             return serviceResult;
         }
-        public ServiceResult GetServiceTypes() {
-            var serviceResult = new ServiceResult();
+        public ServiceResult<List<ServiceTypeDto>> GetServiceTypes() {
+            var serviceResult = new ServiceResult<List<ServiceTypeDto>>();
             try {
                 var data = _ceviriDukkaniModel.ServiceTypes.Where(w => w.Active).ToList();
 

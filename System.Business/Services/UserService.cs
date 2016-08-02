@@ -1,4 +1,5 @@
-﻿using System.Data.Entity;
+﻿using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Reflection;
 using log4net;
@@ -28,8 +29,8 @@ namespace System.Business.Services {
             //_mailService = new YandexMailService();
         }
 
-        public ServiceResult AddUser(UserDto userDto, int createdBy) {
-            var serviceResult = new ServiceResult();
+        public ServiceResult<UserDto> AddUser(UserDto userDto, int createdBy) {
+            var serviceResult = new ServiceResult<UserDto>();
             try {
                 userDto.CreatedBy = createdBy;
                 userDto.Active = true;
@@ -95,8 +96,8 @@ namespace System.Business.Services {
             return serviceResult;
         }
 
-        public ServiceResult EditUser(UserDto userDto, int createdBy) {
-            var serviceResult = new ServiceResult();
+        public ServiceResult<UserDto> EditUser(UserDto userDto, int createdBy) {
+            var serviceResult = new ServiceResult<UserDto>();
             try {
 
                 var user = _model.Users.Include(a => a.UserRoles).FirstOrDefault(f => f.Id == userDto.Id);
@@ -147,8 +148,8 @@ namespace System.Business.Services {
             return serviceResult;
         }
 
-        public ServiceResult GetUser(int userId) {
-            var serviceResult = new ServiceResult();
+        public ServiceResult<UserDto> GetUser(int userId) {
+            var serviceResult = new ServiceResult<UserDto>();
             try {
                 var user = _model.Users
                     .Include(a => a.UserRoles)
@@ -176,8 +177,8 @@ namespace System.Business.Services {
             return serviceResult;
         }
 
-        public ServiceResult GetUsers() {
-            var serviceResult = new ServiceResult();
+        public ServiceResult<List<UserDto>> GetUsers() {
+            var serviceResult = new ServiceResult<List<UserDto>>();
             try {
                 var users = _model.Users
                     .Include(a => a.UserRoles)
@@ -194,9 +195,9 @@ namespace System.Business.Services {
             return serviceResult;
         }
 
-        public ServiceResult GetTranslatorsAccordingToOrderTranslationQuality(int orderId) {
+        public ServiceResult<List<UserDto>> GetTranslatorsAccordingToOrderTranslationQuality(int orderId) {
 
-            var serviceResult = new ServiceResult();
+            var serviceResult = new ServiceResult<List<UserDto>>();
             try {
                 var order = _model.Orders.FirstOrDefault(a => a.Id == orderId);
                 if (order == null) {
@@ -244,8 +245,8 @@ namespace System.Business.Services {
             return serviceResult;
         }
 
-        public ServiceResult AddOrUpdateUserContact(UserDto userDto, int createdBy) {
-            var serviceResult = new ServiceResult();
+        public ServiceResult<UserDto> AddOrUpdateUserContact(UserDto userDto, int createdBy) {
+            var serviceResult = new ServiceResult<UserDto>();
             try {
                 if (userDto?.UserContact == null) {
                     throw new BusinessException(ExceptionCodes.UnableToInsert);
@@ -297,8 +298,8 @@ namespace System.Business.Services {
             return serviceResult;
         }
 
-        public ServiceResult AddOrUpdateUserAbility(UserDto userDto, int createdBy) {
-            var serviceResult = new ServiceResult();
+        public ServiceResult<UserDto> AddOrUpdateUserAbility(UserDto userDto, int createdBy) {
+            var serviceResult = new ServiceResult<UserDto>();
             try {
                 if (userDto?.UserAbility == null) {
                     throw new BusinessException(ExceptionCodes.UnableToInsert);
@@ -435,8 +436,9 @@ namespace System.Business.Services {
             }
             return serviceResult;
         }
-        public ServiceResult AddOrUpdateUserPayment(UserDto userDto, int createdBy) {
-            var serviceResult = new ServiceResult();
+
+        public ServiceResult<UserDto> AddOrUpdateUserPayment(UserDto userDto, int createdBy) {
+            var serviceResult = new ServiceResult<UserDto>();
             try {
                 if (userDto?.UserPayment == null) {
                     throw new BusinessException(ExceptionCodes.UnableToInsert);
@@ -505,8 +507,9 @@ namespace System.Business.Services {
             }
             return serviceResult;
         }
-        public ServiceResult AddOrUpdateUserRate(UserDto userDto, int createdBy) {
-            var serviceResult = new ServiceResult();
+
+        public ServiceResult<UserDto> AddOrUpdateUserRate(UserDto userDto, int createdBy) {
+            var serviceResult = new ServiceResult<UserDto>();
             try {
                 if (userDto?.UserRate == null) {
                     throw new BusinessException(ExceptionCodes.UnableToInsert);
@@ -610,8 +613,8 @@ namespace System.Business.Services {
             return serviceResult;
         }
 
-        public ServiceResult GetTechnologyKnowledgesByUserAbilityId(int userAbilityId) {
-            var serviceResult = new ServiceResult();
+        public ServiceResult<List<TechnologyKnowledgeDto>> GetTechnologyKnowledgesByUserAbilityId(int userAbilityId) {
+            var serviceResult = new ServiceResult<List<TechnologyKnowledgeDto>>();
             try {
                 var data = _model.TechnologyKnowledges
                     .Include(a => a.Software)
@@ -628,8 +631,8 @@ namespace System.Business.Services {
             return serviceResult;
         }
 
-        public ServiceResult GetRateItemsByUserRateId(int userRateId) {
-            var serviceResult = new ServiceResult();
+        public ServiceResult<List<RateItemDto>> GetRateItemsByUserRateId(int userRateId) {
+            var serviceResult = new ServiceResult<List<RateItemDto>>();
             try {
                 var data = _model.RateItems
                     .Include(a => a.Certificate)
