@@ -1,8 +1,10 @@
 ﻿using System.Business.Services;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using Tangent.CeviriDukkani.Domain.Common;
+using Tangent.CeviriDukkani.Domain.Dto.Enums;
 using Tangent.CeviriDukkani.Domain.Dto.System;
 using Tangent.CeviriDukkani.WebCore.BaseControllers;
 
@@ -26,7 +28,7 @@ namespace System.Api.Controllers {
 
 
             response.StatusCode = HttpStatusCode.OK;
-            response.Content = new ObjectContent(serviceResult.Data.GetType(), serviceResult.Data, Formatter);
+            response.Content = new ObjectContent(serviceResult.GetType(), serviceResult, Formatter);
             return response;
         }
 
@@ -41,7 +43,7 @@ namespace System.Api.Controllers {
 
 
             response.StatusCode = HttpStatusCode.OK;
-            response.Content = new ObjectContent(serviceResult.Data.GetType(), serviceResult.Data, Formatter);
+            response.Content = new ObjectContent(serviceResult.GetType(), serviceResult, Formatter);
             return response;
         }
 
@@ -56,7 +58,24 @@ namespace System.Api.Controllers {
             //var userDtoList = new List<UserDto> { new UserDto { Name = "Ahmet", Id = 1 } };
             //serviceResult.Data = userDtoList;
             response.StatusCode = HttpStatusCode.OK;
-            response.Content = new ObjectContent(serviceResult.Data.GetType(), serviceResult.Data, Formatter);
+            response.Content = new ObjectContent(serviceResult.GetType(), serviceResult, Formatter);
+            return response;
+        }
+
+        [HttpPost, Route("GetUsersByUserRoleTypes")]
+        public HttpResponseMessage GetUsersByUserRoleTypes(List<int> userRoleTypeEnums)
+        {
+            var response = new HttpResponseMessage();
+            var serviceResult = _userService.GetUsersByUserRoleTypes(userRoleTypeEnums);
+            if (serviceResult.ServiceResultType != ServiceResultType.Success)
+            {
+                response.StatusCode = HttpStatusCode.InternalServerError;
+                return response;
+            }
+            //var userDtoList = new List<UserDto> { new UserDto { Name = "Ahmet", Id = 1 } };
+            //serviceResult.Data = userDtoList;
+            response.StatusCode = HttpStatusCode.OK;
+            response.Content = new ObjectContent(serviceResult.GetType(), serviceResult, Formatter);
             return response;
         }
 
@@ -71,7 +90,7 @@ namespace System.Api.Controllers {
 
 
             response.StatusCode = HttpStatusCode.OK;
-            response.Content = new ObjectContent(serviceResult.Data.GetType(), serviceResult.Data, Formatter);
+            response.Content = new ObjectContent(serviceResult.GetType(), serviceResult, Formatter);
             return response;
         }
 
@@ -86,7 +105,7 @@ namespace System.Api.Controllers {
 
 
             response.StatusCode = HttpStatusCode.OK;
-            response.Content = new ObjectContent(serviceResult.Data.GetType(), serviceResult.Data, Formatter);
+            response.Content = new ObjectContent(serviceResult.GetType(), serviceResult, Formatter);
             return response;
         }
 
@@ -101,7 +120,7 @@ namespace System.Api.Controllers {
 
 
             response.StatusCode = HttpStatusCode.OK;
-            response.Content = new ObjectContent(serviceResult.Data.GetType(), serviceResult.Data, Formatter);
+            response.Content = new ObjectContent(serviceResult.GetType(), serviceResult, Formatter);
             return response;
         }
 
@@ -116,7 +135,7 @@ namespace System.Api.Controllers {
 
 
             response.StatusCode = HttpStatusCode.OK;
-            response.Content = new ObjectContent(serviceResult.Data.GetType(), serviceResult.Data, Formatter);
+            response.Content = new ObjectContent(serviceResult.GetType(), serviceResult, Formatter);
             return response;
         }
 
@@ -131,7 +150,7 @@ namespace System.Api.Controllers {
             }
 
             response.StatusCode = HttpStatusCode.OK;
-            response.Content = new ObjectContent(serviceResult.Data.GetType(), serviceResult.Data, Formatter);
+            response.Content = new ObjectContent(serviceResult.GetType(), serviceResult, Formatter);
             return response;
         }
         [HttpGet, Route("getRateItemsByUserRateId")]
@@ -144,7 +163,7 @@ namespace System.Api.Controllers {
             }
 
             response.StatusCode = HttpStatusCode.OK;
-            response.Content = new ObjectContent(serviceResult.Data.GetType(), serviceResult.Data, Formatter);
+            response.Content = new ObjectContent(serviceResult.GetType(), serviceResult, Formatter);
             return response;
         }
 
