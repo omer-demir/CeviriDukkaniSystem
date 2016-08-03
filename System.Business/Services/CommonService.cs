@@ -39,6 +39,7 @@ namespace System.Business.Services {
                                         .Include(a => a.UserRoles)
                                         .Include(a => a.UserRoles.Select(x => x.UserRoleType))
                                         .FirstOrDefault(w => w.Email == email);
+
                 if (user == null) {
                     serviceResult.Message = $"There is no related user with email {email}";
                     throw new DbOperationException(ExceptionCodes.NoRelatedData);
@@ -58,7 +59,7 @@ namespace System.Business.Services {
                         throw new DbOperationException(ExceptionCodes.UserLockedOut);
                     }
                     _ceviriDukkaniModel.SaveChanges();
-                    user.PasswordRetryCount ++;
+                    user.PasswordRetryCount++;
 
                     serviceResult.Message = $"Wrong password for user email {email}";
                     serviceResult.Data = _customMapperConfiguration.GetMapDto<UserDto, User>(user);
@@ -534,7 +535,7 @@ namespace System.Business.Services {
             return serviceResult;
         }
         public ServiceResult<List<PriceListDto>> GetPriceLists() {
-            var serviceResult = new ServiceResult<List<PriceListDto>> ();
+            var serviceResult = new ServiceResult<List<PriceListDto>>();
             try {
                 var priceLists = _ceviriDukkaniModel.PriceLists.ToList();
 
@@ -615,7 +616,7 @@ namespace System.Business.Services {
             return serviceResult;
         }
         public ServiceResult<List<CompanyTerminologyDto>> GetCompanyTerminologies() {
-            var serviceResult = new ServiceResult<List<CompanyTerminologyDto>> ();
+            var serviceResult = new ServiceResult<List<CompanyTerminologyDto>>();
             try {
                 var companyTerminologies = _ceviriDukkaniModel.CompanyTerminologies.ToList();
 
