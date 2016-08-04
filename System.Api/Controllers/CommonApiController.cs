@@ -1,4 +1,5 @@
 ﻿using System.Business.Services;
+using System.Linq.Expressions;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
@@ -8,6 +9,7 @@ using Tangent.CeviriDukkani.Domain.Dto.Request;
 using Tangent.CeviriDukkani.Domain.Dto.Sale;
 using Tangent.CeviriDukkani.Domain.Dto.System;
 using Tangent.CeviriDukkani.Domain.Dto.Translation;
+using Tangent.CeviriDukkani.Domain.Entities.Common;
 using Tangent.CeviriDukkani.WebCore.BaseControllers;
 
 namespace System.Api.Controllers {
@@ -21,6 +23,7 @@ namespace System.Api.Controllers {
 
         [Route("login"), HttpPost]
         public HttpResponseMessage Login(LoginRequestDto loginRequest) {
+            
             var response = new HttpResponseMessage();
             ServiceResult<UserDto> serviceResult = _commonService.Login(loginRequest.Email, loginRequest.Password);
             if (serviceResult.ServiceResultType != ServiceResultType.Success) {
@@ -38,7 +41,7 @@ namespace System.Api.Controllers {
             return OK(serviceResult);
         }
         [HttpPost, Route("addMessage")]
-        public HttpResponseMessage AddMessage(MessageDto messageDto) {
+        public HttpResponseMessage AddMessage(MessageRequestDto messageDto) {
             var serviceResult = _commonService.AddMessage(messageDto, 1);
             if (serviceResult.ServiceResultType != ServiceResultType.Success) {
                 return Error(serviceResult);
@@ -68,6 +71,17 @@ namespace System.Api.Controllers {
         public HttpResponseMessage GetMessage([FromUri]int messageId) {
             var serviceResult = _commonService.GetMessage(messageId);
             if (serviceResult.ServiceResultType != ServiceResultType.Success) {
+                return Error(serviceResult);
+            }
+
+            return OK(serviceResult);
+        }
+        [HttpPost, Route("getMessageByQuery")]
+        public HttpResponseMessage GetMessageByQuery(Expression<Func<Message, bool>> expression)
+        {
+            var serviceResult = _commonService.GetMessageByQuery(expression);
+            if (serviceResult.ServiceResultType != ServiceResultType.Success)
+            {
                 return Error(serviceResult);
             }
 
