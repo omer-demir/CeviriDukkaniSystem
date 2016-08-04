@@ -49,18 +49,18 @@ namespace System.Api.Controllers {
 
             return OK(serviceResult);
         }
-        [HttpGet, Route("getIncomingMessages")]
-        public HttpResponseMessage GetIncomingMessages([FromUri]int userId) {
-            var serviceResult = _commonService.GetIncomingMessages(userId);
+        [HttpGet, Route("getIncomingMessagesByUser")]
+        public HttpResponseMessage GetIncomingMessagesByUser([FromUri]int userId) {
+            var serviceResult = _commonService.GetIncomingMessagesByUser(userId);
             if (serviceResult.ServiceResultType != ServiceResultType.Success) {
                 return Error(serviceResult);
             }
 
             return OK(serviceResult);
         }
-        [HttpGet, Route("getSentMessages")]
-        public HttpResponseMessage GetSentMessages([FromUri]int userId) {
-            var serviceResult = _commonService.GetSentMessages(userId);
+        [HttpGet, Route("getSentMessagesByUser")]
+        public HttpResponseMessage GetSentMessagesByUser([FromUri]int userId) {
+            var serviceResult = _commonService.GetSentMessagesByUser(userId);
             if (serviceResult.ServiceResultType != ServiceResultType.Success) {
                 return Error(serviceResult);
             }

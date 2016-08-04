@@ -13,8 +13,8 @@ namespace System.Business.Services {
         ServiceResult<UserDto> Login(string email, string password);
         ServiceResult<UserDto> ChangePassword(string email, string oldPassword, string newPassword);
         ServiceResult<MessageDto> AddMessage(MessageRequestDto messageRequestDto, int createdBy);
-        ServiceResult<List<MessageDto>> GetIncomingMessages(int userId);
-        ServiceResult<List<MessageDto>> GetSentMessages(int userId);
+        ServiceResult<List<MessageDto>> GetIncomingMessagesByUser(int userId);
+        ServiceResult<List<MessageDto>> GetSentMessagesByUser(int userId);
         ServiceResult<MessageDto> GetMessage(int messageId);
         ServiceResult<List<MessageDto>> GetMessageByQuery(Expression<Func<Message, bool>> expression);
         ServiceResult<MessageDto> UpdateMessageForReadDate(int messageId);
