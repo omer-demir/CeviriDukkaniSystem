@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data.Entity;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
 using log4net;
 using Tangent.CeviriDukkani.Data.Model;
 using Tangent.CeviriDukkani.Domain.Common;
 using Tangent.CeviriDukkani.Domain.Dto.Common;
-using Tangent.CeviriDukkani.Domain.Dto.Request;
 using Tangent.CeviriDukkani.Domain.Dto.Sale;
 using Tangent.CeviriDukkani.Domain.Dto.System;
 using Tangent.CeviriDukkani.Domain.Dto.Translation;
@@ -112,25 +110,13 @@ namespace System.Business.Services {
 
             return serviceResult;
         }
-        public ServiceResult<MessageDto> AddMessage(MessageRequestDto messageRequestDto, int createdBy) {
+        public ServiceResult<MessageDto> AddMessage(MessageDto messageDto, int createdBy) {
             var serviceResult = new ServiceResult<MessageDto>();
             try {
-                var user = _ceviriDukkaniModel.Users.FirstOrDefault(f => f.Email == messageRequestDto.Email);
-                if (user == null)
-                {
-                    throw new DbOperationException(ExceptionCodes.NoRelatedData);
-                }
-                var messageDto = new MessageDto
-                {
-                    CreatedBy = createdBy,
-                    Active = true,
-                    FromStatus = true,
-                    ToStatus = true,
-                    MessageText = messageRequestDto.Message,
-                    Subject = messageRequestDto.Subject,
-                    FromUserId = createdBy,
-                    ToUserId = user.Id
-                };
+                messageDto.CreatedBy = createdBy;
+                messageDto.Active = true;
+                messageDto.FromStatus = true;
+                messageDto.ToStatus = true;
 
                 var message = _customMapperConfiguration.GetMapEntity<Message, MessageDto>(messageDto);
 
@@ -192,31 +178,6 @@ namespace System.Business.Services {
             }
             return serviceResult;
         }
-
-        public ServiceResult<List<MessageDto>> GetMessageByQuery(Expression<Func<Message, bool>> expression)
-        {
-            var serviceResult = new ServiceResult<List<MessageDto>>();
-            try
-            {
-                var messages = _ceviriDukkaniModel.Messages
-                    .Include(a => a.FromUser)
-                    .Include(a => a.ToUser)
-                    .Include(a => a.FromCustomer)
-                    .Include(a => a.ToCustomer)
-                    .Where(expression).ToList();
-
-                serviceResult.ServiceResultType = ServiceResultType.Success;
-                serviceResult.Data = messages.Select(s => _customMapperConfiguration.GetMapDto<MessageDto, Message>(s)).ToList();
-            }
-            catch (Exception exc)
-            {
-                serviceResult.Exception = exc;
-                serviceResult.ServiceResultType = ServiceResultType.Fail;
-                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
-            }
-            return serviceResult;
-        }
-
         public ServiceResult<MessageDto> UpdateMessageForReadDate(int messageId) {
             var serviceResult = new ServiceResult<MessageDto>();
             try {
