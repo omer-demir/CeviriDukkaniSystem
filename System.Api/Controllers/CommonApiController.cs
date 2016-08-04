@@ -1,4 +1,5 @@
 ﻿using System.Business.Services;
+using System.Linq.Expressions;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
@@ -8,6 +9,7 @@ using Tangent.CeviriDukkani.Domain.Dto.Request;
 using Tangent.CeviriDukkani.Domain.Dto.Sale;
 using Tangent.CeviriDukkani.Domain.Dto.System;
 using Tangent.CeviriDukkani.Domain.Dto.Translation;
+using Tangent.CeviriDukkani.Domain.Entities.Common;
 using Tangent.CeviriDukkani.WebCore.BaseControllers;
 
 namespace System.Api.Controllers {
@@ -21,6 +23,7 @@ namespace System.Api.Controllers {
 
         [Route("login"), HttpPost]
         public HttpResponseMessage Login(LoginRequestDto loginRequest) {
+            
             var response = new HttpResponseMessage();
             ServiceResult<UserDto> serviceResult = _commonService.Login(loginRequest.Email, loginRequest.Password);
             if (serviceResult.ServiceResultType != ServiceResultType.Success) {
@@ -38,31 +41,31 @@ namespace System.Api.Controllers {
             return OK(serviceResult);
         }
         [HttpPost, Route("addMessage")]
-        public HttpResponseMessage AddMessage(MessageDto messageDto) {
+        public HttpResponseMessage AddMessage(MessageRequestDto messageDto) {
             var serviceResult = _commonService.AddMessage(messageDto, 1);
             if (serviceResult.ServiceResultType != ServiceResultType.Success) {
                 return Error(serviceResult);
             }
 
-            return OK(serviceResult.Data);
+            return OK(serviceResult);
         }
-        [HttpGet, Route("getIncomingMessages")]
-        public HttpResponseMessage GetIncomingMessages([FromUri]int userId) {
-            var serviceResult = _commonService.GetIncomingMessages(userId);
+        [HttpGet, Route("getIncomingMessagesByUser")]
+        public HttpResponseMessage GetIncomingMessagesByUser([FromUri]int userId) {
+            var serviceResult = _commonService.GetIncomingMessagesByUser(userId);
             if (serviceResult.ServiceResultType != ServiceResultType.Success) {
                 return Error(serviceResult);
             }
 
-            return OK(serviceResult.Data);
+            return OK(serviceResult);
         }
-        [HttpGet, Route("getSentMessages")]
-        public HttpResponseMessage GetSentMessages([FromUri]int userId) {
-            var serviceResult = _commonService.GetSentMessages(userId);
+        [HttpGet, Route("getSentMessagesByUser")]
+        public HttpResponseMessage GetSentMessagesByUser([FromUri]int userId) {
+            var serviceResult = _commonService.GetSentMessagesByUser(userId);
             if (serviceResult.ServiceResultType != ServiceResultType.Success) {
                 return Error(serviceResult);
             }
 
-            return OK(serviceResult.Data);
+            return OK(serviceResult);
         }
         [HttpGet, Route("getMessage")]
         public HttpResponseMessage GetMessage([FromUri]int messageId) {
@@ -71,7 +74,18 @@ namespace System.Api.Controllers {
                 return Error(serviceResult);
             }
 
-            return OK(serviceResult.Data);
+            return OK(serviceResult);
+        }
+        [HttpPost, Route("getMessageByQuery")]
+        public HttpResponseMessage GetMessageByQuery(Expression<Func<Message, bool>> expression)
+        {
+            var serviceResult = _commonService.GetMessageByQuery(expression);
+            if (serviceResult.ServiceResultType != ServiceResultType.Success)
+            {
+                return Error(serviceResult);
+            }
+
+            return OK(serviceResult);
         }
         [HttpGet, Route("updateMessageForReadDate")]
         public HttpResponseMessage UpdateMessageForReadDate([FromUri]int messageId) {
@@ -80,7 +94,7 @@ namespace System.Api.Controllers {
                 return Error(serviceResult);
             }
 
-            return OK(serviceResult.Data);
+            return OK(serviceResult);
         }
         [HttpGet, Route("deleteSentMessage")]
         public HttpResponseMessage DeleteSentMessage([FromUri]int messageId) {
@@ -89,7 +103,7 @@ namespace System.Api.Controllers {
                 return Error(serviceResult);
             }
 
-            return OK(serviceResult.Data);
+            return OK(serviceResult);
         }
         [HttpGet, Route("deleteIncomingMessage")]
         public HttpResponseMessage DeleteIncomingMessage([FromUri]int messageId) {
@@ -98,7 +112,7 @@ namespace System.Api.Controllers {
                 return Error(serviceResult);
             }
 
-            return OK(serviceResult.Data);
+            return OK(serviceResult);
         }
         [HttpGet, Route("getCompanies")]
         public HttpResponseMessage GetCompanies() {
@@ -107,7 +121,7 @@ namespace System.Api.Controllers {
                 return Error(serviceResult);
             }
 
-            return OK(serviceResult.Data);
+            return OK(serviceResult);
         }
         [HttpPost, Route("addCompany")]
         public HttpResponseMessage AddCompany(CompanyDto companyDto) {
@@ -116,7 +130,7 @@ namespace System.Api.Controllers {
                 return Error(serviceResult);
             }
 
-            return OK(serviceResult.Data);
+            return OK(serviceResult);
         }
         [HttpPost, Route("editCompany")]
         public HttpResponseMessage EditCompany(CompanyDto companyDto) {
@@ -125,7 +139,7 @@ namespace System.Api.Controllers {
                 return Error(serviceResult);
             }
 
-            return OK(serviceResult.Data);
+            return OK(serviceResult);
         }
         [HttpGet, Route("getLanguages")]
         public HttpResponseMessage GetLanguages() {
@@ -135,7 +149,7 @@ namespace System.Api.Controllers {
                 return Error(serviceResult);
             }
 
-            return OK(serviceResult.Data);
+            return OK(serviceResult);
         }
         [HttpPost, Route("addLanguage")]
         public HttpResponseMessage AddLanguage(LanguageDto languageDto) {
@@ -144,7 +158,7 @@ namespace System.Api.Controllers {
                 return Error(serviceResult);
             }
 
-            return OK(serviceResult.Data);
+            return OK(serviceResult);
         }
         [HttpPost, Route("editLanguage")]
         public HttpResponseMessage EditLanguage(LanguageDto languageDto) {
@@ -153,7 +167,7 @@ namespace System.Api.Controllers {
                 return Error(serviceResult);
             }
 
-            return OK(serviceResult.Data);
+            return OK(serviceResult);
         }
         [HttpGet, Route("getTargetLanguages")]
         public HttpResponseMessage GetTargetLanguages([FromUri]int sourceLanguageId) {
@@ -162,7 +176,7 @@ namespace System.Api.Controllers {
                 return Error(serviceResult);
             }
 
-            return OK(serviceResult.Data);
+            return OK(serviceResult);
         }
         [HttpPost, Route("addSourceTargetLanguages")]
         public HttpResponseMessage AddSourceTargetLanguages(SourceTargetLanguageDto sourceTargetLanguageDto) {
@@ -171,7 +185,7 @@ namespace System.Api.Controllers {
                 return Error(serviceResult);
             }
 
-            return OK(serviceResult.Data);
+            return OK(serviceResult);
         }
         [HttpPost, Route("deleteSourceTargetLanguages")]
         public HttpResponseMessage DeleteSourceTargetLanguages(SourceTargetLanguageDto sourceTargetLanguageDto) {
@@ -180,7 +194,7 @@ namespace System.Api.Controllers {
                 return Error(serviceResult);
             }
 
-            return OK(serviceResult.Data);
+            return OK(serviceResult);
         }
         [HttpGet, Route("getTerminologies")]
         public HttpResponseMessage GetTerminologies() {
@@ -189,7 +203,7 @@ namespace System.Api.Controllers {
                 return Error(serviceResult);
             }
 
-            return OK(serviceResult.Data);
+            return OK(serviceResult);
         }
         [HttpPost, Route("addTerminology")]
         public HttpResponseMessage AddTerminology(TerminologyDto terminologyDto) {
@@ -198,7 +212,7 @@ namespace System.Api.Controllers {
                 return Error(serviceResult);
             }
 
-            return OK(serviceResult.Data);
+            return OK(serviceResult);
         }
         [HttpPost, Route("editTerminology")]
         public HttpResponseMessage EditTerminology(TerminologyDto terminologyDto) {
@@ -207,7 +221,7 @@ namespace System.Api.Controllers {
                 return Error(serviceResult);
             }
 
-            return OK(serviceResult.Data);
+            return OK(serviceResult);
         }
         [HttpGet, Route("getPriceLists")]
         public HttpResponseMessage GetPriceLists() {
@@ -216,7 +230,7 @@ namespace System.Api.Controllers {
                 return Error(serviceResult);
             }
 
-            return OK(serviceResult.Data);
+            return OK(serviceResult);
         }
         [HttpPost, Route("addPriceList")]
         public HttpResponseMessage AddPriceList(PriceListDto priceListDto) {
@@ -225,7 +239,7 @@ namespace System.Api.Controllers {
                 return Error(serviceResult);
             }
 
-            return OK(serviceResult.Data);
+            return OK(serviceResult);
         }
         [HttpPost, Route("editPriceList")]
         public HttpResponseMessage UpdatePriceList(PriceListDto priceListDto) {
@@ -234,7 +248,7 @@ namespace System.Api.Controllers {
                 return Error(serviceResult);
             }
 
-            return OK(serviceResult.Data);
+            return OK(serviceResult);
         }
         [HttpGet, Route("getCompanyTerminologies")]
         public HttpResponseMessage GetCompanyTerminologies() {
@@ -243,7 +257,7 @@ namespace System.Api.Controllers {
                 return Error(serviceResult);
             }
 
-            return OK(serviceResult.Data);
+            return OK(serviceResult);
         }
         [HttpPost, Route("addCompanyTerminology")]
         public HttpResponseMessage AddCompanyTerminology(CompanyTerminologyDto companyTerminologyDto) {
@@ -252,7 +266,7 @@ namespace System.Api.Controllers {
                 return Error(serviceResult);
             }
 
-            return OK(serviceResult.Data);
+            return OK(serviceResult);
         }
         [HttpPost, Route("editCompanyTerminology")]
         public HttpResponseMessage UpdateCompanyTerminology(CompanyTerminologyDto companyTerminologyDto) {
@@ -261,7 +275,7 @@ namespace System.Api.Controllers {
                 return Error(serviceResult);
             }
 
-            return OK(serviceResult.Data);
+            return OK(serviceResult);
         }
         [HttpGet, Route("deleteCompanyTerminology")]
         public HttpResponseMessage DeleteCompanyTerminology(int id) {
@@ -270,7 +284,7 @@ namespace System.Api.Controllers {
                 return Error(serviceResult);
             }
 
-            return OK(serviceResult.Data);
+            return OK(serviceResult);
         }
         
         [HttpGet, Route("getUserRoleTypes")]
@@ -280,7 +294,7 @@ namespace System.Api.Controllers {
                 return Error(serviceResult);
             }
 
-            return OK(serviceResult.Data);
+            return OK(serviceResult);
         }
         [HttpGet, Route("getCountries")]
         public HttpResponseMessage GetCountries() {
@@ -289,7 +303,7 @@ namespace System.Api.Controllers {
                 return Error(serviceResult);
             }
 
-            return OK(serviceResult.Data);
+            return OK(serviceResult);
         }
         [HttpGet, Route("getCitiesByCountryId")]
         public HttpResponseMessage GetCitiesByCountryId([FromUri]int countryId) {
@@ -298,7 +312,7 @@ namespace System.Api.Controllers {
                 return Error(serviceResult);
             }
 
-            return OK(serviceResult.Data);
+            return OK(serviceResult);
         }
         [HttpGet, Route("getDistrictByCityId")]
         public HttpResponseMessage GetDistrictByCityId([FromUri]int cityId) {
@@ -307,7 +321,7 @@ namespace System.Api.Controllers {
                 return Error(serviceResult);
             }
 
-            return OK(serviceResult.Data);
+            return OK(serviceResult);
         }
         [HttpGet, Route("getTongues")]
         public HttpResponseMessage GetTongues() {
@@ -316,7 +330,7 @@ namespace System.Api.Controllers {
                 return Error(serviceResult);
             }
 
-            return OK(serviceResult.Data);
+            return OK(serviceResult);
         }
         [HttpGet, Route("getSpecializations")]
         public HttpResponseMessage GetSpecializations() {
@@ -325,7 +339,7 @@ namespace System.Api.Controllers {
                 return Error(serviceResult);
             }
 
-            return OK(serviceResult.Data);
+            return OK(serviceResult);
         }
         [HttpGet, Route("getSoftwares")]
         public HttpResponseMessage GetSoftwares() {
@@ -334,7 +348,7 @@ namespace System.Api.Controllers {
                 return Error(serviceResult);
             }
 
-            return OK(serviceResult.Data);
+            return OK(serviceResult);
         }
         [HttpGet, Route("getBankAccountTypes")]
         public HttpResponseMessage GetBankAccountTypes() {
@@ -343,7 +357,7 @@ namespace System.Api.Controllers {
                 return Error(serviceResult);
             }
 
-            return OK(serviceResult.Data);
+            return OK(serviceResult);
         }
         [HttpGet, Route("getCurrencies")]
         public HttpResponseMessage GetCurrencies() {
@@ -352,7 +366,7 @@ namespace System.Api.Controllers {
                 return Error(serviceResult);
             }
 
-            return OK(serviceResult.Data);
+            return OK(serviceResult);
         }
         [HttpGet, Route("getWorkingTypes")]
         public HttpResponseMessage GetWorkingTypes() {
@@ -361,7 +375,7 @@ namespace System.Api.Controllers {
                 return Error(serviceResult);
             }
 
-            return OK(serviceResult.Data);
+            return OK(serviceResult);
         }
         [HttpGet, Route("getServiceTypes")]
         public HttpResponseMessage GetServiceTypes() {
@@ -370,7 +384,7 @@ namespace System.Api.Controllers {
                 return Error(serviceResult);
             }
 
-            return OK(serviceResult.Data);
+            return OK(serviceResult);
         }
         [HttpGet, Route("getCompany")]
         public HttpResponseMessage GetCompany(int id) {
@@ -379,7 +393,7 @@ namespace System.Api.Controllers {
                 return Error(serviceResult);
             }
 
-            return OK(serviceResult.Data);
+            return OK(serviceResult);
         }
         [HttpGet, Route("getLanguage")]
         public HttpResponseMessage GetLanguage(int id) {
@@ -388,7 +402,7 @@ namespace System.Api.Controllers {
                 return Error(serviceResult);
             }
 
-            return OK(serviceResult.Data);
+            return OK(serviceResult);
         }
         [HttpGet, Route("getPriceList")]
         public HttpResponseMessage GetPriceList(int id) {
@@ -397,7 +411,7 @@ namespace System.Api.Controllers {
                 return Error(serviceResult);
             }
 
-            return OK(serviceResult.Data);
+            return OK(serviceResult);
         }
         [HttpGet, Route("getCompanyTerminology")]
         public HttpResponseMessage GetCompanyTerminology(int id) {
@@ -406,7 +420,7 @@ namespace System.Api.Controllers {
                 return Error(serviceResult);
             }
 
-            return OK(serviceResult.Data);
+            return OK(serviceResult);
         }
 
     }

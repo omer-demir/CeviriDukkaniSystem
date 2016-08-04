@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Tangent.CeviriDukkani.Domain.Common;
+using Tangent.CeviriDukkani.Domain.Dto.Enums;
 using Tangent.CeviriDukkani.Domain.Dto.System;
 
 namespace System.Business.Services {
@@ -8,6 +9,7 @@ namespace System.Business.Services {
         ServiceResult<UserDto> GetUser(int userId);
         ServiceResult<UserDto> EditUser(UserDto userDto, int createdBy);
         ServiceResult<List<UserDto>> GetUsers();
+        ServiceResult<List<UserDto>> GetUsersByUserRoleTypes(List<int> userRoleTypeEnums);
         ServiceResult<List<UserDto>> GetTranslatorsAccordingToOrderTranslationQuality(int orderId);
         ServiceResult CreateUser(UserDto user);
         ServiceResult<UserDto> AddOrUpdateUserContact(UserDto userDto, int createdBy);
