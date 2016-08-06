@@ -55,8 +55,23 @@ namespace System.Api.Controllers {
                 response.StatusCode = HttpStatusCode.InternalServerError;
                 return response;
             }
-            //var userDtoList = new List<UserDto> { new UserDto { Name = "Ahmet", Id = 1 } };
-            //serviceResult.Data = userDtoList;
+
+            response.StatusCode = HttpStatusCode.OK;
+            response.Content = new ObjectContent(serviceResult.GetType(), serviceResult, Formatter);
+            return response;
+        }
+
+        [HttpGet, Route("getUser")]
+        public HttpResponseMessage GetUser(int userId)
+        {
+            var response = new HttpResponseMessage();
+            var serviceResult = _userService.GetUser(userId);
+            if (serviceResult.ServiceResultType != ServiceResultType.Success)
+            {
+                response.StatusCode = HttpStatusCode.InternalServerError;
+                return response;
+            }
+
             response.StatusCode = HttpStatusCode.OK;
             response.Content = new ObjectContent(serviceResult.GetType(), serviceResult, Formatter);
             return response;

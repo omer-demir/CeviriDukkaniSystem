@@ -22,7 +22,7 @@ namespace System.Api {
 
             var webApp = WebApp.Start<Startup>(url: baseAddress);
             Console.WriteLine($"SS is ready in {baseAddress}");
-
+            
             Console.ReadLine();
 
             Console.WriteLine("Starting to close SS...");
