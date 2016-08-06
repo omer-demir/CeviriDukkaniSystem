@@ -181,8 +181,10 @@ namespace System.Business.Services
                     .Include(a => a.UserContact.District.City.Country)
                     .Include(a => a.UserPayment.BankAccount)
                     .Include(a => a.UserRate)
-                    .Include(a => a.UserScore)
-                    .Include("UserRoles.UserRoleType")
+                    .Include(a => a.UserScore.UserScoreTransactions.Select(x => x.EditingScore))
+                    .Include(a => a.UserScore.UserScoreTransactions.Select(x => x.TranslatingScore))
+                    .Include(a => a.UserScore.UserScoreTransactions.Select(x => x.ProofReadingScore))
+                    .Include(a => a.UserRoles.Select(x => x.UserRoleType))
                     //.Include("UserAbility.TechnologyKnowledges.Software")
                     .FirstOrDefault(f => f.Id == userId);
                 if (user == null)
