@@ -154,7 +154,6 @@ namespace System.Api.Controllers {
             return response;
         }
 
-
         [HttpGet, Route("getTechnologyKnowledgesByUserAbilityId")]
         public HttpResponseMessage GetTechnologyKnowledgesByUserAbilityId([FromUri]int userAbilityId) {
             var response = new HttpResponseMessage();
@@ -168,6 +167,7 @@ namespace System.Api.Controllers {
             response.Content = new ObjectContent(serviceResult.GetType(), serviceResult, Formatter);
             return response;
         }
+
         [HttpGet, Route("getRateItemsByUserRateId")]
         public HttpResponseMessage GetRateItemsByUserRateId([FromUri]int userRateId) {
             var response = new HttpResponseMessage();
@@ -181,7 +181,6 @@ namespace System.Api.Controllers {
             response.Content = new ObjectContent(serviceResult.GetType(), serviceResult, Formatter);
             return response;
         }
-
 
         [HttpGet, Route("getTranslatorsAccordingToOrderTranslationQuality")]
         public HttpResponseMessage GetTranslatorsAccordingToOrderTranslationQuality([FromUri] int orderId) {
