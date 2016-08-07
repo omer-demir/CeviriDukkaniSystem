@@ -13,6 +13,7 @@ using Tangent.CeviriDukkani.WebCore.BaseControllers;
 
 namespace System.Api.Controllers
 {
+    [RoutePrefix("api/customerapi")]
     public class CustomerApiController : BaseApiController
     {
         private readonly ICustomerService _customerService;

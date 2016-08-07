@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -14,21 +13,23 @@ using Tangent.CeviriDukkani.Domain.Exceptions;
 using Tangent.CeviriDukkani.Domain.Exceptions.ExceptionCodes;
 using Tangent.CeviriDukkani.Domain.Mappers;
 
+
 namespace System.Business.Services
 {
     public class CustomerService : ICustomerService
     {
-        internal ILog Log { get; } = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly CeviriDukkaniModel _model;
+        private readonly CustomMapperConfiguration _customMapperConfiguration;
+        private readonly ILog _logger;
+        //private readonly IMailService _mailService;
 
-        private readonly CeviriDukkaniModel _ceviriDukkaniModel;
-        private readonly ICustomMapperConfiguration _customMapperConfiguration;
-
-        public CustomerService(CeviriDukkaniModel ceviriDukkaniModel, ICustomMapperConfiguration customMapperConfiguration)
+        public CustomerService(CeviriDukkaniModel model, CustomMapperConfiguration customMapperConfiguration, ILog logger)
         {
-            _ceviriDukkaniModel = ceviriDukkaniModel;
+            _model = model;
             _customMapperConfiguration = customMapperConfiguration;
+            _logger = logger;
+            //_mailService = new YandexMailService();
         }
-
         public ServiceResult<CustomerDto> AddCustomer(CustomerDto customerDto, int createdBy)
         {
             var serviceResult = new ServiceResult<CustomerDto>();
@@ -39,8 +40,8 @@ namespace System.Business.Services
 
                 var customer = _customMapperConfiguration.GetMapEntity<Customer, CustomerDto>(customerDto);
 
-                _ceviriDukkaniModel.Customers.Add(customer);
-                if (_ceviriDukkaniModel.SaveChanges() <= 0)
+                _model.Customers.Add(customer);
+                if (_model.SaveChanges() <= 0)
                 {
                     throw new BusinessException(ExceptionCodes.UnableToInsert);
                 }
@@ -51,7 +52,7 @@ namespace System.Business.Services
             {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
-                Log.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
             }
             return serviceResult;
         }
@@ -60,7 +61,7 @@ namespace System.Business.Services
             var serviceResult = new ServiceResult<CustomerDto>();
             try
             {
-                var customer = _ceviriDukkaniModel.Customers.Find(customerId);
+                var customer = _model.Customers.Find(customerId);
                 if (customer == null)
                 {
                     throw new DbOperationException(ExceptionCodes.NoRelatedData);
@@ -72,7 +73,7 @@ namespace System.Business.Services
             {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
-                Log.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
             }
             return serviceResult;
         }
@@ -81,7 +82,7 @@ namespace System.Business.Services
             var serviceResult = new ServiceResult<CustomerDto>();
             try
             {
-                var customer = _ceviriDukkaniModel.Customers.FirstOrDefault(f => f.Id == customerDto.Id);
+                var customer = _model.Customers.FirstOrDefault(f => f.Id == customerDto.Id);
                 if (customer == null)
                 {
                     throw new DbOperationException(ExceptionCodes.NoRelatedData);
@@ -98,7 +99,7 @@ namespace System.Business.Services
                 customerDto.UpdatedBy = createdBy;
                 customerDto.UpdatedAt = DateTime.Now;
 
-                _ceviriDukkaniModel.SaveChanges();
+                _model.SaveChanges();
 
                 serviceResult.ServiceResultType = ServiceResultType.Success;
                 serviceResult.Data = _customMapperConfiguration.GetMapDto<CustomerDto, Customer>(customer);
@@ -107,7 +108,7 @@ namespace System.Business.Services
             {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
-                Log.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
             }
             return serviceResult;
         }
@@ -116,7 +117,7 @@ namespace System.Business.Services
             var serviceResult = new ServiceResult<List<CustomerDto>>();
             try
             {
-                var customers = _ceviriDukkaniModel.Customers.ToList();
+                var customers = _model.Customers.ToList();
 
                 serviceResult.ServiceResultType = ServiceResultType.Success;
                 serviceResult.Data = customers.Select(s => _customMapperConfiguration.GetMapDto<CustomerDto, Customer>(s)).ToList();
@@ -125,7 +126,7 @@ namespace System.Business.Services
             {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
-                Log.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
             }
             return serviceResult;
         }
@@ -134,7 +135,7 @@ namespace System.Business.Services
             var serviceResult = new ServiceResult<List<CustomerDto>>();
             try
             {
-                var customers = _ceviriDukkaniModel.Customers.Where(w => w.CompanyId == companyId).ToList();
+                var customers = _model.Customers.Where(w => w.CompanyId == companyId).ToList();
 
                 serviceResult.ServiceResultType = ServiceResultType.Success;
                 serviceResult.Data = customers.Select(s => _customMapperConfiguration.GetMapDto<CustomerDto, Customer>(s)).ToList();
@@ -143,7 +144,7 @@ namespace System.Business.Services
             {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
-                Log.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
             }
             return serviceResult;
         }
