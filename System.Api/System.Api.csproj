@@ -146,6 +146,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\CommonApiController.cs" />
+    <Compile Include="Controllers\CustomerApiController.cs" />
     <Compile Include="Controllers\UserApiController.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
