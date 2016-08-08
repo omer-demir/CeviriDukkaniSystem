@@ -11,6 +11,8 @@ namespace System.Business.Services {
         ServiceResult<List<UserDto>> GetUsers();
         ServiceResult<List<UserDto>> GetUsersByUserRoleTypes(List<int> userRoleTypeEnums);
         ServiceResult<List<UserDto>> GetTranslatorsAccordingToOrderTranslationQuality(int orderId);
+        ServiceResult<List<UserDto>> GetEditorsAccordingToOrderTranslationQuality(int orderId);
+        ServiceResult<List<UserDto>> GetProofReadersAccordingToOrderTranslationQuality(int orderId);
         ServiceResult CreateUser(UserDto user);
         ServiceResult<UserDto> AddOrUpdateUserContact(UserDto userDto, int createdBy);
         ServiceResult<UserDto> AddOrUpdateUserAbility(UserDto userDto, int createdBy);
