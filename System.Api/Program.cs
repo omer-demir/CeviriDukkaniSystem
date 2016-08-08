@@ -40,7 +40,7 @@ namespace System.Api {
             builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
 
             Container = builder.Build();
-            CustomLogger.Logger.Info($"SS service is up and ready with projections {DateTime.Today}");
+            //CustomLogger.Logger.Info($"SS service is up and ready with projections {DateTime.Today}");
         }
 
         public static IContainer Container { get; set; }
@@ -57,6 +57,7 @@ namespace System.Api {
         public static void RegisterBusiness(this ContainerBuilder builder) {
             builder.RegisterType<UserService>().As<IUserService>().InstancePerLifetimeScope();
             builder.RegisterType<CommonService>().As<ICommonService>().InstancePerLifetimeScope();
+            builder.RegisterType<CustomerService>().As<ICustomerService>().InstancePerLifetimeScope();
         }
 
         public static void RegisterEvents(this ContainerBuilder builder, Settings settings) {
