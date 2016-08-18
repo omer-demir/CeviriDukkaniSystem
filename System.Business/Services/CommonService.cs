@@ -542,7 +542,7 @@ namespace System.Business.Services
             var serviceResult = new ServiceResult<List<SourceTargetLanguageDto>>();
             try
             {
-                var languages = _ceviriDukkaniModel.SourceTargetLanguages.Where(w => w.SourceLanguageId == sourceLanguageId).ToList();
+                var languages = _ceviriDukkaniModel.SourceTargetLanguages.Include(a=>a.TargetLanguage).Where(w => w.SourceLanguageId == sourceLanguageId).ToList();
 
                 serviceResult.ServiceResultType = ServiceResultType.Success;
                 serviceResult.Data = languages.Select(s => _customMapperConfiguration.GetMapDto<SourceTargetLanguageDto, SourceTargetLanguage>(s)).ToList();

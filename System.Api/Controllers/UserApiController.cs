@@ -192,5 +192,25 @@ namespace System.Api.Controllers {
             return OK(serviceResult);
         }
 
+        [HttpGet, Route("getEditorAccordingToOrderTranslationQuality")]
+        public HttpResponseMessage GetEditorsAccordingToOrderTranslationQuality([FromUri] int orderId) {
+            var serviceResult = _userService.GetEditorsAccordingToOrderTranslationQuality(orderId);
+            if (serviceResult.ServiceResultType != ServiceResultType.Success) {
+                return Error(serviceResult);
+            }
+
+            return OK(serviceResult);
+        }
+
+        [HttpGet, Route("getProofReadersAccordingToOrderTranslationQuality")]
+        public HttpResponseMessage GetProofReadersAccordingToOrderTranslationQuality([FromUri] int orderId) {
+            var serviceResult = _userService.GetProofReadersAccordingToOrderTranslationQuality(orderId);
+            if (serviceResult.ServiceResultType != ServiceResultType.Success) {
+                return Error(serviceResult);
+            }
+
+            return OK(serviceResult);
+        }
+
     }
 }
