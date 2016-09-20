@@ -37,11 +37,6 @@ namespace System.Business.Services {
 
                 var user = _customMapperConfiguration.GetMapEntity<User, UserDto>(userDto);
 
-                ////////////////
-
-
-                #region Email Control
-
                 var tempUser = _model.Users.FirstOrDefault(m => m.Email == user.Email && m.Active);
                 if (tempUser != null) {
                     serviceResult.ServiceResultType = ServiceResultType.Warning;
@@ -53,10 +48,10 @@ namespace System.Business.Services {
                     f.Active = true;
                     f.CreatedBy = createdBy;
                 });
-
-                #endregion                
-
+                user.UserContact = null;
                 _model.Users.Add(user);
+
+               
                 //if (userDto.UserRoles?.Count > 0)
                 //{
                 //    foreach (UserRoleDto userRoleDto in userDto.UserRoles)
@@ -72,6 +67,11 @@ namespace System.Business.Services {
                 if (_model.SaveChanges() <= 0) {
                     throw new BusinessException(ExceptionCodes.UnableToInsert);
                 }
+
+                //var userContact = _customMapperConfiguration.GetMapEntity<UserContact, UserContactDto>(userDto.UserContact);
+                //userContact.
+                //_model.UserContacts.Add(userContact);
+
                 serviceResult.ServiceResultType = ServiceResultType.Success;
                 serviceResult.Data = _customMapperConfiguration.GetMapDto<UserDto, User>(user);
 
