@@ -430,15 +430,15 @@ namespace System.Api.Controllers {
             return OK(serviceResult);
         }
 
-        [HttpGet, Route("getTranslationQualities")]
-        public HttpResponseMessage GetTranslationQualities() {
-            var serviceResult = _commonService.GetTranslationQualities();
-            if (serviceResult.ServiceResultType != ServiceResultType.Success) {
-                return Error(serviceResult);
-            }
+        //[HttpGet, Route("getTranslationQualities")]
+        //public HttpResponseMessage GetTranslationQualities() {
+        //    var serviceResult = _commonService.GetTranslationQualities();
+        //    if (serviceResult.ServiceResultType != ServiceResultType.Success) {
+        //        return Error(serviceResult);
+        //    }
 
-            return OK(serviceResult);
-        }
+        //    return OK(serviceResult);
+        //}
 
     }
 }
