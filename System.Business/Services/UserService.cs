@@ -219,7 +219,7 @@ namespace System.Business.Services {
         public ServiceResult<List<UserDto>> GetTranslatorsAccordingToOrderTranslationQuality(int orderId) {
             var serviceResult = new ServiceResult<List<UserDto>>();
             try {
-                var order = _model.Orders.FirstOrDefault(a => a.Id == orderId);
+                var order = _model.TranslatingOrders.FirstOrDefault(a => a.Id == orderId);
                 if (order == null) {
                     throw new BusinessException(ExceptionCodes.NoOrderWithSpecifiedId);
                 }
@@ -257,7 +257,7 @@ namespace System.Business.Services {
         public ServiceResult<List<UserDto>> GetEditorsAccordingToOrderTranslationQuality(int orderId) {
             var serviceResult = new ServiceResult<List<UserDto>>();
             try {
-                var order = _model.Orders.FirstOrDefault(a => a.Id == orderId);
+                var order = _model.TranslatingOrders.FirstOrDefault(a => a.Id == orderId);
                 if (order == null) {
                     throw new BusinessException(ExceptionCodes.NoOrderWithSpecifiedId);
                 }
@@ -294,7 +294,7 @@ namespace System.Business.Services {
         public ServiceResult<List<UserDto>> GetProofReadersAccordingToOrderTranslationQuality(int orderId) {
             var serviceResult = new ServiceResult<List<UserDto>>();
             try {
-                var order = _model.Orders.FirstOrDefault(a => a.Id == orderId);
+                var order = _model.TranslatingOrders.FirstOrDefault(a => a.Id == orderId);
                 if (order == null) {
                     throw new BusinessException(ExceptionCodes.NoOrderWithSpecifiedId);
                 }
