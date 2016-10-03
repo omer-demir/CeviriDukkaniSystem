@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Web.Http;
 using Tangent.CeviriDukkani.Domain.Common;
 using Tangent.CeviriDukkani.Domain.Dto.Enums;
+using Tangent.CeviriDukkani.Domain.Dto.Request;
 using Tangent.CeviriDukkani.Domain.Dto.System;
 using Tangent.CeviriDukkani.WebCore.BaseControllers;
 
@@ -15,6 +16,16 @@ namespace System.Api.Controllers {
 
         public UserApiController(IUserService userService) {
             _userService = userService;
+        }
+
+        [HttpPost, Route("updateUserRegistration")]
+        public HttpResponseMessage UpdateUserRegistration(UpdateUserStepRequestDto request) {
+            var serviceResult = _userService.UpdateUserRegistration(request.User,request.Step);
+            if (serviceResult.ServiceResultType != ServiceResultType.Success) {
+                return Error(serviceResult);
+            }
+
+            return OK(serviceResult);
         }
 
         [HttpPost, Route("addUser")]

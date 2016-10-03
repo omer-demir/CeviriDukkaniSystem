@@ -6,6 +6,7 @@ using Tangent.CeviriDukkani.Domain.Dto.System;
 namespace System.Business.Services {
     public interface IUserService {
         ServiceResult<UserDto> AddUser(UserDto user, int createdBy);
+        ServiceResult<UserDto> UpdateUserRegistration(UserDto user, int step);
         ServiceResult<UserDto> GetUser(int userId);
         ServiceResult<UserDto> EditUser(UserDto userDto, int createdBy);
         ServiceResult<List<UserDto>> GetUsers();

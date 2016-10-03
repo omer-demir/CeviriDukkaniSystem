@@ -51,26 +51,9 @@ namespace System.Business.Services {
                 user.UserContact = null;
                 _model.Users.Add(user);
 
-               
-                //if (userDto.UserRoles?.Count > 0)
-                //{
-                //    foreach (UserRoleDto userRoleDto in userDto.UserRoles)
-                //    {
-                //        userRoleDto.CreatedBy = createdBy;
-                //        userRoleDto.Active = true;
-                //        userRoleDto.UserId = user.Id;
-
-                //        var userRole = _customMapperConfiguration.GetMapEntity<UserRole, UserRoleDto>(userRoleDto);
-                //        _model.UserRoles.Add(userRole);
-                //    }
-                //}
                 if (_model.SaveChanges() <= 0) {
                     throw new BusinessException(ExceptionCodes.UnableToInsert);
                 }
-
-                //var userContact = _customMapperConfiguration.GetMapEntity<UserContact, UserContactDto>(userDto.UserContact);
-                //userContact.
-                //_model.UserContacts.Add(userContact);
 
                 serviceResult.ServiceResultType = ServiceResultType.Success;
                 serviceResult.Data = _customMapperConfiguration.GetMapDto<UserDto, User>(user);
@@ -87,6 +70,84 @@ namespace System.Business.Services {
                 //    serviceResult.ExceptionCode = ExceptionCodes.EmailCouldntSendToUser;
                 //    throw res.Exception;
                 //}
+
+            } catch (Exception exc) {
+                serviceResult.Exception = exc;
+                serviceResult.ServiceResultType = ServiceResultType.Fail;
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+            }
+            return serviceResult;
+        }
+
+        public ServiceResult<UserDto> UpdateUserRegistration(UserDto user, int step) {
+            var serviceResult = new ServiceResult<UserDto>();
+            try {
+                user.CreatedBy = 0;
+                user.CreatedAt = DateTime.Now;
+
+                var userEntity = _customMapperConfiguration.GetMapEntity<User, UserDto>(user);
+
+                if (step != 1) {
+                    var tempUser = _model.Users.FirstOrDefault(m => m.Email == user.Email && m.Active);
+                    if (tempUser != null) {
+                        serviceResult.ServiceResultType = ServiceResultType.Warning;
+                        serviceResult.Message = ServiceMessage.EmailIsUsed;
+                        return serviceResult;
+                    }
+                }
+
+
+                User userData;
+                switch (step) {
+                    case 1:
+                        userEntity.UserRoles = new List<UserRole> {
+                            new UserRole {
+                                Active = true,
+                                UserRoleTypeId = (int) UserRoleTypeEnum.Translator,
+                                CreatedAt = DateTime.Now,
+                                CreatedBy = 1
+                            }
+                        };
+                        _model.Users.Add(userEntity);
+                        break;
+                    case 2:
+                        userData = _model.Users.Find(user.Id);
+                        userData.UserContact = _customMapperConfiguration.GetMapEntity<UserContact, UserContactDto>(user.UserContact);
+                        _model.Entry(userData).State=EntityState.Modified;
+                        break;
+                    case 3:
+                        userData = _model.Users.Find(user.Id);
+                        userData.UserAbility = _customMapperConfiguration.GetMapEntity<UserAbility, UserAbilityDto>(user.UserAbility);
+                        _model.Entry(userData).State = EntityState.Modified;
+                        break;
+                    case 4:
+                        userData = _model.Users.Find(user.Id);
+                        var technologies=user.UserAbility.TechnologyKnowledges.Select(a=>_customMapperConfiguration.GetMapEntity<TechnologyKnowledge,TechnologyKnowledgeDto>(a));
+                        technologies.ToList().ForEach(a=>a.UserAbilityId=userData.UserAbilityId.Value);
+                        _model.TechnologyKnowledges.AddRange(technologies);
+                        break;
+                    case 5:
+                        userData = _model.Users.Find(user.Id);
+                        userData.UserPayment = _customMapperConfiguration.GetMapEntity<UserPayment, UserPaymentDto>(user.UserPayment);
+                        _model.Entry(userData).State = EntityState.Modified;
+                        break;
+                    case 6:
+                        userData = _model.Users.Find(user.Id);
+                        userData.UserRate = _customMapperConfiguration.GetMapEntity<UserRate, UserRateDto>(user.UserRate);
+                        _model.Entry(userData).State = EntityState.Modified;
+                        break;
+                    default:
+                        break;
+                }
+
+
+
+                if (_model.SaveChanges() <= 0) {
+                    throw new BusinessException(ExceptionCodes.UnableToInsert);
+                }
+
+                serviceResult.ServiceResultType = ServiceResultType.Success;
+                serviceResult.Data = _customMapperConfiguration.GetMapDto<UserDto, User>(userEntity);
 
             } catch (Exception exc) {
                 serviceResult.Exception = exc;
