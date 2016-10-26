@@ -21,5 +21,6 @@ namespace System.Business.Services {
         ServiceResult<UserDto> AddOrUpdateUserRate(UserDto userDto, int createdBy);
         ServiceResult<List<TechnologyKnowledgeDto>> GetTechnologyKnowledgesByUserAbilityId(int userAbilityId);
         ServiceResult<List<RateItemDto>> GetRateItemsByUserRateId(int userRateId);
+        ServiceResult<UserDto> SetActive(int id, bool active,int updatedBy);
     }
 }

@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using log4net;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Reflection;
-using log4net;
 using Tangent.CeviriDukkani.Data.Model;
 using Tangent.CeviriDukkani.Domain.Common;
 using Tangent.CeviriDukkani.Domain.Dto.Common;
@@ -15,7 +15,8 @@ using Tangent.CeviriDukkani.Domain.Exceptions.ExceptionCodes;
 using Tangent.CeviriDukkani.Domain.Mappers;
 using EntityState = System.Data.Entity.EntityState;
 
-namespace System.Business.Services {
+namespace System.Business.Services
+{
     public class UserService : IUserService {
         private readonly CeviriDukkaniModel _model;
         private readonly CustomMapperConfiguration _customMapperConfiguration;
@@ -804,6 +805,34 @@ namespace System.Business.Services {
                 serviceResult.ServiceResultType = ServiceResultType.Success;
                 serviceResult.Data = data.Select(s => _customMapperConfiguration.GetMapDto<RateItemDto, RateItem>(s)).ToList();
             } catch (Exception exc) {
+                serviceResult.Exception = exc;
+                serviceResult.ServiceResultType = ServiceResultType.Fail;
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+            }
+            return serviceResult;
+        }
+
+        public ServiceResult<UserDto> SetActive(int id,bool active, int updatedBy)
+        {
+            var serviceResult = new ServiceResult<UserDto>();
+            try
+            {
+                var user = _model.Users.Include(a => a.UserRoles).FirstOrDefault(f => f.Id == id);
+                if (user == null)
+                {
+                    throw new DbOperationException(ExceptionCodes.NoRelatedData);
+                }
+                user.Active = active;
+                user.UpdatedBy = updatedBy;
+                user.UpdatedAt = DateTime.Now;
+                
+                _model.SaveChanges();
+
+                serviceResult.ServiceResultType = ServiceResultType.Success;
+                serviceResult.Data = _customMapperConfiguration.GetMapDto<UserDto, User>(user);
+            }
+            catch (Exception exc)
+            {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;
                 _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");

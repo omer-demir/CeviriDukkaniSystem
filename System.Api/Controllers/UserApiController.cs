@@ -223,5 +223,17 @@ namespace System.Api.Controllers {
             return OK(serviceResult);
         }
 
+        [HttpGet, Route("SetActive")]
+        public HttpResponseMessage SetActive([FromUri] int id, [FromUri] bool active, [FromUri] int updatedBy)
+        {
+            var serviceResult = _userService.SetActive(id, active, updatedBy);
+            if (serviceResult.ServiceResultType != ServiceResultType.Success)
+            {
+                return Error(serviceResult);
+            }
+
+            return OK(serviceResult);
+        }
+
     }
 }
