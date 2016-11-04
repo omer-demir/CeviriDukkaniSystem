@@ -839,5 +839,36 @@ namespace System.Business.Services
             }
             return serviceResult;
         }
+
+        public ServiceResult<UserDto> SetActive(UserDto userDto)
+        {
+            var serviceResult = new ServiceResult<UserDto>();
+            try
+            {
+
+                var user = _model.Users.Include(a => a.UserRoles).FirstOrDefault(f => f.Id == userDto.Id);
+                if (user == null)
+                {
+                    throw new DbOperationException(ExceptionCodes.NoRelatedData);
+                }
+                user.Active = userDto.Active;
+                user.UpdatedBy = userDto.UpdatedBy;
+                user.UpdatedAt = DateTime.Now;
+                
+                userDto.UpdatedAt = DateTime.Now;
+
+                _model.SaveChanges();
+
+                serviceResult.ServiceResultType = ServiceResultType.Success;
+                serviceResult.Data = _customMapperConfiguration.GetMapDto<UserDto, User>(user);
+            }
+            catch (Exception exc)
+            {
+                serviceResult.Exception = exc;
+                serviceResult.ServiceResultType = ServiceResultType.Fail;
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+            }
+            return serviceResult;
+        }
     }
 }

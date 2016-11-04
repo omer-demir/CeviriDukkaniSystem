@@ -223,16 +223,21 @@ namespace System.Api.Controllers {
             return OK(serviceResult);
         }
 
-        [HttpGet, Route("SetActive")]
-        public HttpResponseMessage SetActive([FromUri] int id, [FromUri] bool active, [FromUri] int updatedBy)
+        [HttpPost, Route("setActive")]
+        public HttpResponseMessage SetActive(UserDto userDto)
         {
-            var serviceResult = _userService.SetActive(id, active, updatedBy);
+            var response = new HttpResponseMessage();
+            var serviceResult = _userService.SetActive(userDto);
             if (serviceResult.ServiceResultType != ServiceResultType.Success)
             {
-                return Error(serviceResult);
+                response.StatusCode = HttpStatusCode.InternalServerError;
+                return response;
             }
 
-            return OK(serviceResult);
+
+            response.StatusCode = HttpStatusCode.OK;
+            response.Content = new ObjectContent(serviceResult.GetType(), serviceResult, Formatter);
+            return response;
         }
 
     }

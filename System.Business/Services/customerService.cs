@@ -148,5 +148,35 @@ namespace System.Business.Services
             }
             return serviceResult;
         }
+
+        public ServiceResult<CustomerDto> SetActive(CustomerDto customerDto)
+        {
+            var serviceResult = new ServiceResult<CustomerDto>();
+            try
+            {
+                var customer = _model.Customers.FirstOrDefault(f => f.Id == customerDto.Id);
+                if (customer == null)
+                {
+                    throw new DbOperationException(ExceptionCodes.NoRelatedData);
+                }
+                customer.Active = customerDto.Active;
+                customer.UpdatedBy = customerDto.UpdatedBy;
+                customer.UpdatedAt = DateTime.Now;
+                
+                customerDto.UpdatedAt = DateTime.Now;
+
+                _model.SaveChanges();
+
+                serviceResult.ServiceResultType = ServiceResultType.Success;
+                serviceResult.Data = _customMapperConfiguration.GetMapDto<CustomerDto, Customer>(customer);
+            }
+            catch (Exception exc)
+            {
+                serviceResult.Exception = exc;
+                serviceResult.ServiceResultType = ServiceResultType.Fail;
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+            }
+            return serviceResult;
+        }
     }
 }

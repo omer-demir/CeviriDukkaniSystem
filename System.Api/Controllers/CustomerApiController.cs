@@ -82,5 +82,17 @@ namespace System.Api.Controllers
 
             return OK(serviceResult);
         }
+
+        [HttpPost, Route("setActive")]
+        public HttpResponseMessage SetActive(CustomerDto customerDto)
+        {
+            var serviceResult = _customerService.SetActive(customerDto);
+            if (serviceResult.ServiceResultType != ServiceResultType.Success)
+            {
+                return Error(serviceResult);
+            }
+
+            return OK(serviceResult);
+        }
     }
 }
