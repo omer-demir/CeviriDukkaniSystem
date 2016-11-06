@@ -441,7 +441,7 @@ namespace System.Business.Services {
                 language.UpdatedBy = createdBy;
                 language.UpdatedAt = DateTime.Now;
                 language.Name = languageDto.Name;
-
+                language.Active = languageDto.Active;
                 _ceviriDukkaniModel.SaveChanges();
 
                 serviceResult.ServiceResultType = ServiceResultType.Success;
