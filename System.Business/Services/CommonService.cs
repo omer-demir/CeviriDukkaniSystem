@@ -61,8 +61,7 @@ namespace System.Business.Services {
                         throw new DbOperationException(ExceptionCodes.UserLockedOut);
                     }
                     _ceviriDukkaniModel.SaveChanges();
-                    user.PasswordRetryCount++;
-
+                    
                     serviceResult.Message = $"Wrong password for user email {email}";
                     serviceResult.Data = _customMapperConfiguration.GetMapDto<UserDto, User>(user);
                     throw new DbOperationException(ExceptionCodes.WrongPasswordForUser);
