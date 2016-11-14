@@ -5,6 +5,7 @@ using Autofac;
 using Autofac.Integration.WebApi;
 using log4net;
 using Microsoft.Owin.Hosting;
+using MongoDB.Driver;
 using RabbitMQ.Client;
 using Tangent.CeviriDukkani.Data.Model;
 using Tangent.CeviriDukkani.Domain.Mappers;
@@ -21,21 +22,22 @@ namespace System.Api {
             Console.WriteLine("Bootstrapper finished");
 
             var webApp = WebApp.Start<Startup>(url: baseAddress);
+
             Console.WriteLine($"SS is ready in {baseAddress}");
-            
+
             Console.ReadLine();
 
             Console.WriteLine("Starting to close SS...");
-
-            //Container.Resolve<IConnection>().Close();
         }
 
         public static void Bootstrapper() {
             var builder = new ContainerBuilder();
-            builder.RegisterCommons();
+            var settings = builder.RegisterSettings();
+
+            builder.RegisterCommons(settings);
             builder.RegisterBusiness();
 
-            var settings = builder.RegisterSettings();
+            
             builder.RegisterEvents(settings);
             builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
 
@@ -47,11 +49,14 @@ namespace System.Api {
     }
 
     public static class AutofacExtensions {
-        public static void RegisterCommons(this ContainerBuilder builder) {
+        public static void RegisterCommons(this ContainerBuilder builder, Settings settings) {
 
             builder.RegisterType<CeviriDukkaniModel>().AsSelf().InstancePerLifetimeScope();
             builder.RegisterType<CustomMapperConfiguration>().AsSelf().SingleInstance();
             builder.RegisterInstance(CustomLogger.Logger).As<ILog>().SingleInstance();
+            var instance = new MongoClient(settings.MongoEventStore);
+
+            builder.RegisterInstance(instance).As(typeof(MongoClient));
         }
 
         public static void RegisterBusiness(this ContainerBuilder builder) {
@@ -79,7 +84,8 @@ namespace System.Api {
                 RabbitPassword = ConfigurationManager.AppSettings["RabbitPassword"],
                 RabbitPort = int.Parse(ConfigurationManager.AppSettings["RabbitPort"]),
                 RabbitUserName = ConfigurationManager.AppSettings["RabbitUserName"],
-                DocumentServiceEndpoint = ConfigurationManager.AppSettings["DocumentServiceEndpoint"]
+                DocumentServiceEndpoint = ConfigurationManager.AppSettings["DocumentServiceEndpoint"],
+                MongoEventStore = ConfigurationManager.AppSettings["MongoEventStore"]
             };
 
             builder.RegisterInstance(settings);

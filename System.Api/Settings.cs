@@ -6,5 +6,6 @@
         public string RabbitPassword { get; set; }
         public string RabbitExchangeName { get; set; }
         public string DocumentServiceEndpoint { get; set; }
+        public string MongoEventStore { get; set; }
     }
 }

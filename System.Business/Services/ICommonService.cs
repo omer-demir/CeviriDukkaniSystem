@@ -64,5 +64,10 @@ namespace System.Business.Services {
         ServiceResult<List<WorkingTypeDto>> GetWorkingTypes();
         ServiceResult<List<ServiceTypeDto>> GetServiceTypes();
         ServiceResult<List<TranslationQualityDto>> GetTranslationQualities();
+
+        ServiceResult<CareerItemDto> SaveCareerItem(CareerItemDto careerItem);
+        ServiceResult<List<CareerItemDto>> GetCareerItems();
+        ServiceResult<CareerItemDto> GetCareerItem(int id);
+        ServiceResult<CareerItemDto> UpdateCareerItem(CareerItemDto careerItem);
     }
 }

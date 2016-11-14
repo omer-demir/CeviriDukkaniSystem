@@ -769,7 +769,7 @@ namespace System.Business.Services {
         public ServiceResult<List<CountryDto>> GetCountries() {
             var serviceResult = new ServiceResult<List<CountryDto>>();
             try {
-                var countries = _ceviriDukkaniModel.Countries.Where(w => w.Active).OrderBy(a=>a.Name).ToList();
+                var countries = _ceviriDukkaniModel.Countries.Where(w => w.Active).OrderBy(a => a.Name).ToList();
 
                 serviceResult.ServiceResultType = ServiceResultType.Success;
                 serviceResult.Data = countries.Select(s => _customMapperConfiguration.GetMapDto<CountryDto, Country>(s)).ToList();
@@ -913,6 +913,78 @@ namespace System.Business.Services {
 
                 serviceResult.ServiceResultType = ServiceResultType.Success;
                 serviceResult.Data = data.Select(s => _customMapperConfiguration.GetMapDto<TranslationQualityDto, TranslationQuality>(s)).ToList();
+            } catch (Exception exc) {
+                serviceResult.Exception = exc;
+                serviceResult.ServiceResultType = ServiceResultType.Fail;
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+            }
+            return serviceResult;
+        }
+
+        public ServiceResult<CareerItemDto> SaveCareerItem(CareerItemDto careerItem) {
+            var serviceResult = new ServiceResult<CareerItemDto>();
+            try {
+                _ceviriDukkaniModel.CareerItems.Add(
+                    _customMapperConfiguration.GetMapEntity<CareerItem, CareerItemDto>(careerItem));
+
+                _ceviriDukkaniModel.SaveChanges();
+                serviceResult.ServiceResultType = ServiceResultType.Success;
+                serviceResult.Data = careerItem;
+            } catch (Exception exc) {
+                serviceResult.Exception = exc;
+                serviceResult.ServiceResultType = ServiceResultType.Fail;
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+            }
+            return serviceResult;
+        }
+
+        public ServiceResult<List<CareerItemDto>> GetCareerItems() {
+            var serviceResult = new ServiceResult<List<CareerItemDto>>();
+            try {
+                var data = _ceviriDukkaniModel.CareerItems.Where(w => w.Active).ToList();
+
+                serviceResult.ServiceResultType = ServiceResultType.Success;
+                serviceResult.Data = data.Select(s => _customMapperConfiguration.GetMapDto<CareerItemDto, CareerItem>(s)).ToList();
+            } catch (Exception exc) {
+                serviceResult.Exception = exc;
+                serviceResult.ServiceResultType = ServiceResultType.Fail;
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+            }
+            return serviceResult;
+        }
+
+        public ServiceResult<CareerItemDto> GetCareerItem(int id) {
+            var serviceResult = new ServiceResult<CareerItemDto>();
+
+            try {
+                var data = _ceviriDukkaniModel.CareerItems.FirstOrDefault(w => w.Active && w.Id == id);
+
+                serviceResult.ServiceResultType = ServiceResultType.Success;
+                serviceResult.Data = _customMapperConfiguration.GetMapDto<CareerItemDto, CareerItem>(data);
+            } catch (Exception exc) {
+                serviceResult.Exception = exc;
+                serviceResult.ServiceResultType = ServiceResultType.Fail;
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+            }
+            return serviceResult;
+        }
+
+        public ServiceResult<CareerItemDto> UpdateCareerItem(CareerItemDto careerItem) {
+            var serviceResult = new ServiceResult<CareerItemDto>();
+
+            try {
+                var data = _ceviriDukkaniModel.CareerItems.FirstOrDefault(w => w.Active && w.Id == careerItem.Id);
+                data.Detail = careerItem.Detail;
+                data.Location = careerItem.Location;
+                data.PersonCount = careerItem.PersonCount;
+                data.Title = careerItem.Title;
+
+                _ceviriDukkaniModel.Entry(data).State = EntityState.Modified;
+                _ceviriDukkaniModel.SaveChanges();
+
+
+                serviceResult.ServiceResultType = ServiceResultType.Success;
+                serviceResult.Data = _customMapperConfiguration.GetMapDto<CareerItemDto, CareerItem>(data);
             } catch (Exception exc) {
                 serviceResult.Exception = exc;
                 serviceResult.ServiceResultType = ServiceResultType.Fail;

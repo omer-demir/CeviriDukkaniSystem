@@ -28,6 +28,20 @@ namespace System.Api.Controllers {
             return OK(serviceResult);
         }
 
+        [HttpGet, Route("getUserRegistration")]
+        public HttpResponseMessage GetUserRegistration(int userId) {
+            var response = new HttpResponseMessage();
+            var serviceResult = _userService.GetUserRegistration(userId);
+            if (serviceResult.ServiceResultType != ServiceResultType.Success) {
+                response.StatusCode = HttpStatusCode.InternalServerError;
+                return response;
+            }
+
+            response.StatusCode = HttpStatusCode.OK;
+            response.Content = new ObjectContent(serviceResult.GetType(), serviceResult, Formatter);
+            return response;
+        }
+
         [HttpPost, Route("addUser")]
         public HttpResponseMessage AddUser(UserDto userDto) {
             var response = new HttpResponseMessage();
