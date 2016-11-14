@@ -237,5 +237,22 @@ namespace System.Api.Controllers {
             return OK(serviceResult);
         }
 
+        [HttpPost, Route("setActive")]
+        public HttpResponseMessage SetActive(UserDto userDto)
+        {
+            var response = new HttpResponseMessage();
+            var serviceResult = _userService.SetActive(userDto);
+            if (serviceResult.ServiceResultType != ServiceResultType.Success)
+            {
+                response.StatusCode = HttpStatusCode.InternalServerError;
+                return response;
+            }
+
+
+            response.StatusCode = HttpStatusCode.OK;
+            response.Content = new ObjectContent(serviceResult.GetType(), serviceResult, Formatter);
+            return response;
+        }
+
     }
 }

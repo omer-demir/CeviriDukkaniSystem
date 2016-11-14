@@ -1,6 +1,5 @@
 ﻿using System.Business.Services;
 using System.Linq.Expressions;
-using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using Tangent.CeviriDukkani.Domain.Common;
@@ -12,7 +11,8 @@ using Tangent.CeviriDukkani.Domain.Dto.Translation;
 using Tangent.CeviriDukkani.Domain.Entities.Common;
 using Tangent.CeviriDukkani.WebCore.BaseControllers;
 
-namespace System.Api.Controllers {
+namespace System.Api.Controllers
+{
     [RoutePrefix("api/commonapi")]
     public class CommonApiController : BaseApiController {
         private readonly ICommonService _commonService;
@@ -131,9 +131,22 @@ namespace System.Api.Controllers {
             return OK(serviceResult);
         }
         [HttpPost, Route("editCompany")]
-        public HttpResponseMessage EditCompany(CompanyDto companyDto) {
+        public HttpResponseMessage EditCompany(CompanyDto companyDto)
+        {
             var serviceResult = _commonService.UpdateCompany(companyDto, 1);
-            if (serviceResult.ServiceResultType != ServiceResultType.Success) {
+            if (serviceResult.ServiceResultType != ServiceResultType.Success)
+            {
+                return Error(serviceResult);
+            }
+
+            return OK(serviceResult);
+        }
+        [HttpPost, Route("setCompanyActive")]
+        public HttpResponseMessage SetCompanyActive(CompanyDto companyDto)
+        {
+            var serviceResult = _commonService.setCompanyActive(companyDto);
+            if (serviceResult.ServiceResultType != ServiceResultType.Success)
+            {
                 return Error(serviceResult);
             }
 

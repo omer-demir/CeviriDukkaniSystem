@@ -61,8 +61,7 @@ namespace System.Business.Services {
                         throw new DbOperationException(ExceptionCodes.UserLockedOut);
                     }
                     _ceviriDukkaniModel.SaveChanges();
-                    user.PasswordRetryCount++;
-
+                    
                     serviceResult.Message = $"Wrong password for user email {email}";
                     serviceResult.Data = _customMapperConfiguration.GetMapDto<UserDto, User>(user);
                     throw new DbOperationException(ExceptionCodes.WrongPasswordForUser);
@@ -365,6 +364,36 @@ namespace System.Business.Services {
             }
             return serviceResult;
         }
+        public ServiceResult<CompanyDto> setCompanyActive(CompanyDto companyDto)
+        {
+            var serviceResult = new ServiceResult<CompanyDto>();
+            try
+            {
+
+                var company = _ceviriDukkaniModel.Companies.FirstOrDefault(f => f.Id == companyDto.Id);
+                if (company == null)
+                {
+                    throw new DbOperationException(ExceptionCodes.NoRelatedData);
+                }
+                company.Active = companyDto.Active;
+                company.UpdatedBy = companyDto.UpdatedBy;
+                company.UpdatedAt = DateTime.Now;
+                companyDto.UpdatedAt = DateTime.Now;
+
+                _ceviriDukkaniModel.SaveChanges();
+
+                serviceResult.ServiceResultType = ServiceResultType.Success;
+                serviceResult.Data = _customMapperConfiguration.GetMapDto<CompanyDto, Company>(company);
+            }
+            catch (Exception exc)
+            {
+                serviceResult.Exception = exc;
+                serviceResult.ServiceResultType = ServiceResultType.Fail;
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+            }
+            return serviceResult;
+        }
+
         public ServiceResult<List<LanguageDto>> GetLanguages() {
             var serviceResult = new ServiceResult<List<LanguageDto>>();
             try {
@@ -412,7 +441,7 @@ namespace System.Business.Services {
                 language.UpdatedBy = createdBy;
                 language.UpdatedAt = DateTime.Now;
                 language.Name = languageDto.Name;
-
+                language.Active = languageDto.Active;
                 _ceviriDukkaniModel.SaveChanges();
 
                 serviceResult.ServiceResultType = ServiceResultType.Success;
