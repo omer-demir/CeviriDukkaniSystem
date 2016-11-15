@@ -40,6 +40,22 @@ namespace System.Business.Services
 
                 var customer = _customMapperConfiguration.GetMapEntity<Customer, CustomerDto>(customerDto);
 
+                var tempUser = _model.Users.FirstOrDefault(m => m.Email == customerDto.Email && m.Active);
+                if (tempUser != null)
+                {
+                    serviceResult.ServiceResultType = ServiceResultType.Warning;
+                    serviceResult.Message = ServiceMessage.EmailIsUsed;
+                    return serviceResult;
+                }
+
+                var tempCustomer = _model.Customers.FirstOrDefault(m => m.Email == customerDto.Email && m.Active);
+                if (tempCustomer != null)
+                {
+                    serviceResult.ServiceResultType = ServiceResultType.Warning;
+                    serviceResult.Message = ServiceMessage.EmailIsUsed;
+                    return serviceResult;
+                }
+
                 _model.Customers.Add(customer);
                 if (_model.SaveChanges() <= 0)
                 {

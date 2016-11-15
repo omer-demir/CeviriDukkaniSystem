@@ -39,7 +39,16 @@ namespace System.Business.Services
                 var user = _customMapperConfiguration.GetMapEntity<User, UserDto>(userDto);
 
                 var tempUser = _model.Users.FirstOrDefault(m => m.Email == user.Email && m.Active);
-                if (tempUser != null) {
+                if (tempUser != null)
+                {
+                    serviceResult.ServiceResultType = ServiceResultType.Warning;
+                    serviceResult.Message = ServiceMessage.EmailIsUsed;
+                    return serviceResult;
+                }
+
+                var tempCustomer = _model.Customers.FirstOrDefault(m => m.Email == user.Email && m.Active);
+                if (tempCustomer != null)
+                {
                     serviceResult.ServiceResultType = ServiceResultType.Warning;
                     serviceResult.Message = ServiceMessage.EmailIsUsed;
                     return serviceResult;
