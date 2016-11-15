@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Reflection;
+using log4net;
+using MongoDB.Driver;
 using Tangent.CeviriDukkani.Data.Model;
 using Tangent.CeviriDukkani.Domain.Common;
 using Tangent.CeviriDukkani.Domain.Dto.Common;
 using Tangent.CeviriDukkani.Domain.Dto.Enums;
+using Tangent.CeviriDukkani.Domain.Dto.Request;
 using Tangent.CeviriDukkani.Domain.Dto.System;
 using Tangent.CeviriDukkani.Domain.Entities.Common;
 using Tangent.CeviriDukkani.Domain.Entities.System;
@@ -21,12 +24,14 @@ namespace System.Business.Services
         private readonly CeviriDukkaniModel _model;
         private readonly CustomMapperConfiguration _customMapperConfiguration;
         private readonly ILog _logger;
+        private readonly MongoClient _mongoClient;
         //private readonly IMailService _mailService;
 
-        public UserService(CeviriDukkaniModel model, CustomMapperConfiguration customMapperConfiguration, ILog logger) {
+        public UserService(CeviriDukkaniModel model, CustomMapperConfiguration customMapperConfiguration, ILog logger, MongoClient mongoClient) {
             _model = model;
             _customMapperConfiguration = customMapperConfiguration;
             _logger = logger;
+            _mongoClient = mongoClient;
             //_mailService = new YandexMailService();
         }
 
@@ -89,6 +94,24 @@ namespace System.Business.Services
             return serviceResult;
         }
 
+        public ServiceResult<UpdateUserStepRequestDto> GetUserRegistration(int id) {
+            var serviceResult = new ServiceResult<UpdateUserStepRequestDto>();
+            try {
+                var userRegistration = _model.AccountRegistrations.Include(a => a.User).FirstOrDefault(a => a.Id == id);
+
+                serviceResult.Data = new UpdateUserStepRequestDto {
+                    Step = userRegistration.CurrentStep,
+                    User = _customMapperConfiguration.GetMapDto<UserDto, User>(userRegistration.User)
+                };
+                serviceResult.ServiceResultType = ServiceResultType.Success;
+            } catch (Exception exc) {
+                serviceResult.Exception = exc;
+                serviceResult.ServiceResultType = ServiceResultType.Fail;
+                _logger.Error($"Error occured in {MethodBase.GetCurrentMethod().Name} with exception message {exc.Message} and inner exception {exc.InnerException?.Message}");
+            }
+            return serviceResult;
+        }
+
         public ServiceResult<UserDto> UpdateUserRegistration(UserDto user, int step) {
             var serviceResult = new ServiceResult<UserDto>();
             try {
@@ -123,7 +146,7 @@ namespace System.Business.Services
                     case 2:
                         userData = _model.Users.Find(user.Id);
                         userData.UserContact = _customMapperConfiguration.GetMapEntity<UserContact, UserContactDto>(user.UserContact);
-                        _model.Entry(userData).State=EntityState.Modified;
+                        _model.Entry(userData).State = EntityState.Modified;
                         break;
                     case 3:
                         userData = _model.Users.Find(user.Id);
@@ -132,8 +155,8 @@ namespace System.Business.Services
                         break;
                     case 4:
                         userData = _model.Users.Find(user.Id);
-                        var technologies=user.UserAbility.TechnologyKnowledges.Select(a=>_customMapperConfiguration.GetMapEntity<TechnologyKnowledge,TechnologyKnowledgeDto>(a));
-                        technologies.ToList().ForEach(a=>a.UserAbilityId=userData.UserAbilityId.Value);
+                        var technologies = user.UserAbility.TechnologyKnowledges.Select(a => _customMapperConfiguration.GetMapEntity<TechnologyKnowledge, TechnologyKnowledgeDto>(a));
+                        technologies.ToList().ForEach(a => a.UserAbilityId = userData.UserAbilityId.Value);
                         _model.TechnologyKnowledges.AddRange(technologies);
                         break;
                     case 5:
@@ -151,6 +174,17 @@ namespace System.Business.Services
                 }
 
 
+
+                if (_model.SaveChanges() <= 0) {
+                    throw new BusinessException(ExceptionCodes.UnableToInsert);
+                }
+
+                _model.AccountRegistrations.Add(new AccountRegistration {
+                    Active = true,
+                    CurrentStep = step,
+                    IsConfirmed = false,
+                    UserId = userEntity.Id
+                });
 
                 if (_model.SaveChanges() <= 0) {
                     throw new BusinessException(ExceptionCodes.UnableToInsert);
