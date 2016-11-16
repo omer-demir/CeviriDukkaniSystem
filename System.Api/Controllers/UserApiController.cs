@@ -4,12 +4,12 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using Tangent.CeviriDukkani.Domain.Common;
-using Tangent.CeviriDukkani.Domain.Dto.Enums;
 using Tangent.CeviriDukkani.Domain.Dto.Request;
 using Tangent.CeviriDukkani.Domain.Dto.System;
 using Tangent.CeviriDukkani.WebCore.BaseControllers;
 
-namespace System.Api.Controllers {
+namespace System.Api.Controllers
+{
     [RoutePrefix("api/userapi")]
     public class UserApiController : BaseApiController {
         private readonly IUserService _userService;

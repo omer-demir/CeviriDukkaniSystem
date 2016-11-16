@@ -55,7 +55,18 @@ namespace System.Business.Services
                     serviceResult.Message = ServiceMessage.EmailIsUsed;
                     return serviceResult;
                 }
-
+                if (customer.MembershipTypeId == 2 && customer.CompanyId == null)
+                {
+                    customer.Company.CreatedBy = createdBy;
+                    customer.Company.Active = true;
+                    _model.Companies.Add(customer.Company);
+                  
+                    if (_model.SaveChanges() <= 0)
+                    {
+                        throw new BusinessException(ExceptionCodes.UnableToInsert);
+                    }
+                    customer.CompanyId = customer.Company.Id;
+                }
                 _model.Customers.Add(customer);
                 if (_model.SaveChanges() <= 0)
                 {
