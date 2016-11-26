@@ -397,7 +397,7 @@ namespace System.Business.Services {
         public ServiceResult<List<LanguageDto>> GetLanguages() {
             var serviceResult = new ServiceResult<List<LanguageDto>>();
             try {
-                var languages = _ceviriDukkaniModel.Languages.ToList();
+                var languages = _ceviriDukkaniModel.Languages.Where(a=>a.Active).ToList();
 
                 serviceResult.ServiceResultType = ServiceResultType.Success;
                 serviceResult.Data = languages.Select(s => _customMapperConfiguration.GetMapDto<LanguageDto, Language>(s)).ToList();
@@ -472,7 +472,7 @@ namespace System.Business.Services {
         public ServiceResult<List<SourceTargetLanguageDto>> GetTargetLanguages(int sourceLanguageId) {
             var serviceResult = new ServiceResult<List<SourceTargetLanguageDto>>();
             try {
-                var languages = _ceviriDukkaniModel.SourceTargetLanguages.Include(a => a.TargetLanguage).Where(w => w.SourceLanguageId == sourceLanguageId).ToList();
+                var languages = _ceviriDukkaniModel.SourceTargetLanguages.Include(a => a.TargetLanguage).Where(w => w.SourceLanguageId == sourceLanguageId).Where(a=>a.Active).ToList();
 
                 serviceResult.ServiceResultType = ServiceResultType.Success;
                 serviceResult.Data = languages.Select(s => _customMapperConfiguration.GetMapDto<SourceTargetLanguageDto, SourceTargetLanguage>(s)).ToList();
